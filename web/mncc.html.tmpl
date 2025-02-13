@@ -1,0 +1,54 @@
+{{template "header.html.tmpl" .}}
+
+<form id="mnccForm">
+  <label for="name">Name <span aria-label="required">*</span></label>
+  <input type="text" id="name" name="name" aria-required>
+  <div id="nameError" class="error hidden">Name is required</div>
+    
+  <label for="pronouns">Pronouns</label>
+  <input type="text" id="pronouns" name="pronouns">
+    
+  <label for="phoneNumber">Phone Number <span aria-label="required">*</span></label>
+  <input type="tel" id="phoneNumber" name="phone_number" aria-required data-validation="{{.Fields.phone_number.Validation}}">
+  <div id="phoneNumberError" class="error hidden">Phone number is required</div>
+    
+  <label for="email">Email <span aria-label="required">*</span></label>
+  <input type="email" id="email" name="email" aria-required data-validation="{{.Fields.email.Validation}}">
+  <div id="emailError" class="error hidden">Email is required</div>
+    
+  <label for="dietaryRestrictions">Dietary Restrictions</label>
+  <input type="text" id="dietaryRestrictions" name="dietary_restrictions">
+    
+  <div>
+    <label for="wavier">
+      <input type="checkbox" id="waiver" name="waiver_completed" value="1" required>
+      I have filled out a MNCC Waiver. (<a href="https://www.mnclimbingcoop.com/open-hours/#waiver-id" target="_blank">Waiver</a>)
+    </label>
+  </div>
+
+  <div>
+    <label>
+      <input type="checkbox" id="shoes" name="shoes_needed">
+      I need climbing shoes.
+    </label>
+  </div>
+
+  <div id="shoeSizeContainer" class="hidden">
+    <label for="shoeSize">What size climbing shoes do you wear?</label>
+    <input type="text" id="shoeSize" name="shoe_size">
+    <div id="shoeSizeError" class="error hidden">Shoe size is required if you need climbing shoes</div>
+  </div>
+    
+  <div>
+    <label>
+      <input type="checkbox" id="needChalkBag" name="chalk_needed" value="1">
+      I need a chalk bag.
+    </label>
+  </div>
+    
+  <button type="submit">Submit</button>
+</form>
+
+<script src="/assets/mncc.js"></script>
+
+{{template "footer.html.tmpl" .}}

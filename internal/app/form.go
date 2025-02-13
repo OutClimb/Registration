@@ -1,42 +1,74 @@
 package app
 
 import (
-	"io"
-	"text/template"
 	"time"
+
+	"github.com/OutClimb/Registration/internal/store"
 )
 
+type FormFieldInternal struct {
+	Name       string
+	Slug       string
+	Type       string
+	Metadata   string
+	Required   bool
+	Validation string
+}
+
+func (f *FormFieldInternal) Internalize(field store.FormField) {
+	f.Name = field.Name
+	f.Slug = field.Slug
+	f.Type = field.Type
+	f.Metadata = field.Metadata
+	f.Required = field.Required
+	f.Validation = field.Validation
+}
+
 type FormInternal struct {
-	ID             uint
 	Slug           string
 	Name           string
 	Template       string
-	OpensOn        time.Time
-	ClosesOn       time.Time
+	OpensOn        *time.Time
+	ClosesOn       *time.Time
 	Submissions    uint
 	MaxSubmissions uint
+	Fields         map[string]*FormFieldInternal
+}
+
+func (f *FormInternal) Internalize(field store.Form) {
+	f.Name = field.Name
+	f.Slug = field.Slug
+	f.Template = field.Template
+	f.OpensOn = field.OpensOn
+	f.ClosesOn = field.ClosesOn
+	f.Submissions = uint(len(field.Submissions))
+	f.MaxSubmissions = field.MaxSubmissions
+
+	f.Fields = make(map[string]*FormFieldInternal, len(field.FormFields))
+	for _, field := range field.FormFields {
+		f.Fields[field.Slug] = &FormFieldInternal{}
+		f.Fields[field.Slug].Internalize(field)
+	}
 }
 
 func (f *FormInternal) IsBeforeFormOpen() bool {
+	if f.OpensOn == nil {
+		return false
+	}
+
 	return f.OpensOn.Before(time.Now())
 }
 
 func (f *FormInternal) IsAfterFormClose() bool {
+	if f.ClosesOn == nil {
+		return false
+	}
+
 	return f.ClosesOn.After(time.Now())
 }
 
 func (f *FormInternal) IsFormFilled() bool {
-	return f.Submissions >= f.MaxSubmissions
-}
-
-func (f *FormInternal) WriteTemplate(writer io.Writer) error {
-	if tmpl, error := template.New(f.Template).ParseFiles("./web/" + f.Template + ".html.tmpl"); error != nil {
-		return error
-	} else if tmpl.Execute(writer, f); error != nil {
-		return error
-	}
-
-	return nil
+	return f.MaxSubmissions != 0 && f.Submissions >= f.MaxSubmissions
 }
 
 func (a *appLayer) GetForm(slug string) (FormInternal, error) {
@@ -45,14 +77,8 @@ func (a *appLayer) GetForm(slug string) (FormInternal, error) {
 		return FormInternal{}, error
 	}
 
-	return FormInternal{
-		ID:             form.ID,
-		Slug:           form.Slug,
-		Name:           form.Name,
-		Template:       form.Template,
-		OpensOn:        form.OpensOn,
-		ClosesOn:       form.ClosesOn,
-		Submissions:    uint(len(form.Submissions)),
-		MaxSubmissions: form.MaxSubmissions,
-	}, nil
+	internalForm := FormInternal{}
+	internalForm.Internalize(form)
+
+	return internalForm, nil
 }

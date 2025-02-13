@@ -26,6 +26,16 @@ func New(appLayer app.AppLayer) *httpLayer {
 }
 
 func (h *httpLayer) setupFrontendRoutes() {
+	// Load templates
+	h.engine.LoadHTMLGlob("./web/*.html.tmpl")
+
+	// Static Files
+	h.engine.Static("/assets", "./web/assets")
+	h.engine.StaticFile("/favicon.ico", "./web/favicon.ico")
+	h.engine.StaticFile("/manifest.json", "./web/manifest.json")
+	h.engine.StaticFile("/robots.txt", "./web/robots.txt")
+
+	// Form Endpoint
 	h.engine.GET("/form/:slug", h.getForm)
 
 	// If no route is matched, redirect to the main page
@@ -37,7 +47,10 @@ func (h *httpLayer) setupFrontendRoutes() {
 func (h *httpLayer) setupApiRoutes() {
 	api := h.engine.Group("/api/v1")
 	{
+		// Health Check
 		api.GET("/ping", h.GetPing)
+
+		// Form Submission Endpoint
 		api.POST("/submission/:formSlug", h.createSubmission)
 	}
 }

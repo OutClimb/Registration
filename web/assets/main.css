@@ -1,0 +1,90 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    color: #000;
+    font-family: "Poppins", Arial, sans-serif;
+    line-height: 1.6;
+}
+
+header {
+    margin: 0 auto;
+    max-width: 600px;
+    padding: 48px 0 0;
+    text-align: center;
+}
+
+.logo-anchor {
+    display: inline-block;
+}
+
+.logo {
+    height: 96px;
+}
+
+main {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 20px 20px;
+}
+
+form {
+    background-color: #f4f4f3;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="checkbox"] {
+    display: inline;
+    margin-right: 5px;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #7877e6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #9292ea;
+}
+
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.hidden {
+    display: none;
+}
