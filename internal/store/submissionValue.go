@@ -3,14 +3,14 @@ package store
 type SubmissionValue struct {
 	ID           uint `gorm:"primaryKey"`
 	SubmissionID uint
-	FormValueID  uint
+	FormFieldID  uint
 	Value        string
 }
 
-func (s *storeLayer) CreateSubmissionValue(submissionId uint, formValueId uint, value string) (SubmissionValue, error) {
+func (s *storeLayer) CreateSubmissionValue(submissionId uint, formFieldId uint, value string) (SubmissionValue, error) {
 	submissionValue := SubmissionValue{
 		SubmissionID: submissionId,
-		FormValueID:  formValueId,
+		FormFieldID:  formFieldId,
 		Value:        value,
 	}
 
