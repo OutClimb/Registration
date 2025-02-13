@@ -1,9 +1,14 @@
 package app
 
-import "github.com/OutClimb/Registration/internal/store"
+import (
+	"io"
+
+	"github.com/OutClimb/Registration/internal/store"
+)
 
 type AppLayer interface {
-	CheckEventExists(slug string) bool
+	FormExists(slug string) bool
+	WriteFormTemplate(slug string, writer io.Writer) error
 }
 
 type appLayer struct {

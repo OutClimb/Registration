@@ -10,8 +10,12 @@ import (
 )
 
 type StoreLayer interface {
-	CreateEvent(name string, slug string) (Event, error)
-	GetEvent(slug string) (Event, error)
+	CreateSubmission(formId uint, ipAddress string, userAgent string, values map[uint]string) (Submission, error)
+	CreateSubmissionValue(submissionId uint, formValueId uint, value string) (SubmissionValue, error)
+	GetForm(slug string) (Form, error)
+	GetFormExists(slug string) bool
+	GetFormField(formID uint, slug string) (FormField, error)
+	GetFormFields(formID uint) ([]FormField, error)
 }
 
 type storeLayer struct {
@@ -48,7 +52,8 @@ func New() *storeLayer {
 		log.Fatal("Error: Unable to connect to MySQL server", err)
 	}
 
-	db.AutoMigrate(&Event{})
+	db.AutoMigrate(&Form{})
+	db.AutoMigrate(&FormField{})
 
 	return &storeLayer{
 		db: db,

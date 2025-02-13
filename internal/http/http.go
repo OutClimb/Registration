@@ -1,8 +1,6 @@
 package http
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -21,49 +19,26 @@ func New(appLayer app.AppLayer) *httpLayer {
 		app:    appLayer,
 	}
 
-	h.SetupFrontendRoutes()
-	h.SetupApiRoutes()
+	h.setupFrontendRoutes()
+	h.setupApiRoutes()
 
 	return h
 }
 
-func (h *httpLayer) SetupFrontendRoutes() {
-	// Check if the web directory exists and is a directory
-	stats, err := os.Stat("./web")
-	if !os.IsNotExist(err) && stats.IsDir() {
-		// Read the contents of the web directory
-		entries, err := os.ReadDir("./web")
-		if err != nil {
-			log.Fatal(err)
-		}
+func (h *httpLayer) setupFrontendRoutes() {
+	h.engine.GET("/form/:slug", h.getForm)
 
-		// For each entry in the web directory, add a route
-		for _, e := range entries {
-			if e.IsDir() {
-				h.engine.Static("/"+e.Name(), "./web/"+e.Name())
-			} else {
-				h.engine.StaticFile("/"+e.Name(), "./web/"+e.Name())
-			}
-		}
-	} else {
-		fmt.Println("The web directory does not exists, so no frontend will be served. Make sure to build the frontend first.")
-	}
-
-	// If no route is matched, serve the index.html file
+	// If no route is matched, redirect to the main page
 	h.engine.NoRoute(func(c *gin.Context) {
-		c.Header("Content-Type", "text/html; charset=utf-8")
-		c.File("./web/index.html")
-
-		c.Status(http.StatusNotFound)
+		c.Redirect(http.StatusTemporaryRedirect, "https://outclimb.gay")
 	})
 }
 
-func (h *httpLayer) SetupApiRoutes() {
+func (h *httpLayer) setupApiRoutes() {
 	api := h.engine.Group("/api/v1")
 	{
 		api.GET("/ping", h.GetPing)
-		api.GET("/event/:slug", h.GetEvent)
-		api.POST("/register", h.CreateRegistration)
+		api.POST("/submission/:formSlug", h.createSubmission)
 	}
 }
 

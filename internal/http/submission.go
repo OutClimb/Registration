@@ -4,6 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *httpLayer) CreateRegistration(c *gin.Context) {
+func (h *httpLayer) createSubmission(c *gin.Context) {
 
 }
