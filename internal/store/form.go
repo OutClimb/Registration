@@ -25,10 +25,3 @@ func (s *storeLayer) GetForm(slug string) (Form, error) {
 
 	return form, nil
 }
-
-func (s *storeLayer) GetFormExists(slug string) bool {
-	var count int64 = 0
-	s.db.Model(&Form{}).Where("slug = ?", slug).Count(&count)
-
-	return count == 1
-}

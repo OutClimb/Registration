@@ -13,7 +13,6 @@ type StoreLayer interface {
 	CreateSubmission(formId uint, ipAddress string, userAgent string, values map[uint]string) (Submission, error)
 	CreateSubmissionValue(submissionId uint, formValueId uint, value string) (SubmissionValue, error)
 	GetForm(slug string) (Form, error)
-	GetFormExists(slug string) bool
 	GetFormField(formID uint, slug string) (FormField, error)
 	GetFormFields(formID uint) ([]FormField, error)
 }
