@@ -2,39 +2,49 @@ package store
 
 import (
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Submission struct {
-	ID               uint `gorm:"primaryKey"`
-	FormID           uint
-	SubmittedOn      time.Time
-	IPAddress        string
-	UserAgent        string
-	SubmissionValues []SubmissionValue
+	ID          uint `gorm:"primaryKey"`
+	FormID      uint
+	SubmittedOn time.Time
+	IPAddress   string
+	UserAgent   string
 }
 
-func (s *storeLayer) CreateSubmission(formId uint, ipAddress string, userAgent string, values map[uint]string) (Submission, error) {
+func (s *storeLayer) GetNumberOfSubmissions(formID uint) (int64, error) {
+	var count int64
+
+	if result := s.db.Model(&Submission{}).Where("form_id = ?", formID).Count(&count); result.Error != nil {
+		return 0, result.Error
+	}
+
+	return count, nil
+}
+
+func (s *storeLayer) CreateSubmission(form *Form, fields *[]FormField, ipAddress string, userAgent string, values map[string]string) (*Submission, error) {
 	submission := Submission{
-		FormID:      formId,
+		FormID:      form.ID,
 		SubmittedOn: time.Now(),
 		IPAddress:   ipAddress,
 		UserAgent:   userAgent,
 	}
 
-	if result := s.db.Create(submission); result.Error != nil {
-		return Submission{}, result.Error
-	}
-
-	submission.SubmissionValues = make([]SubmissionValue, len(values))
-	index := 0
-	for fieldId, value := range values {
-		if submissionValue, error := s.CreateSubmissionValue(submission.ID, fieldId, value); error == nil {
-			submission.SubmissionValues[index] = submissionValue
-			index++
-		} else {
-			// TODO: Rollback submission
+	s.db.Transaction(func(tx *gorm.DB) error {
+		if result := s.db.Create(&submission); result.Error != nil {
+			return result.Error
 		}
-	}
 
-	return submission, nil
+		for _, field := range *fields {
+			if _, err := s.CreateSubmissionValue(submission.ID, field.ID, values[field.Slug]); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+
+	return &submission, nil
 }

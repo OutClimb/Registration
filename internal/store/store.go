@@ -10,11 +10,11 @@ import (
 )
 
 type StoreLayer interface {
-	CreateSubmission(formId uint, ipAddress string, userAgent string, values map[uint]string) (Submission, error)
-	CreateSubmissionValue(submissionId uint, formValueId uint, value string) (SubmissionValue, error)
-	GetForm(slug string) (Form, error)
-	GetFormField(formID uint, slug string) (FormField, error)
-	GetFormFields(formID uint) ([]FormField, error)
+	CreateSubmission(form *Form, fields *[]FormField, ipAddress string, userAgent string, values map[string]string) (*Submission, error)
+	CreateSubmissionValue(submissionId uint, formValueId uint, value string) (*SubmissionValue, error)
+	GetForm(slug string) (*Form, error)
+	GetFormFields(formID uint) (*[]FormField, error)
+	GetNumberOfSubmissions(formID uint) (int64, error)
 }
 
 type storeLayer struct {

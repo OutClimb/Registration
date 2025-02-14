@@ -5,7 +5,9 @@ import (
 )
 
 type AppLayer interface {
-	GetForm(slug string) (FormInternal, error)
+	CreateSubmission(slug string, ipAddress string, userAgent string, values map[string]string) (*SubmissionInternal, error)
+	GetForm(slug string) (*FormInternal, error)
+	ValidateSubmissionWithForm(submission map[string]string, form *FormInternal) error
 }
 
 type appLayer struct {

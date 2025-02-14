@@ -51,7 +51,7 @@ func (h *httpLayer) setupApiRoutes() {
 		api.GET("/ping", h.GetPing)
 
 		// Form Submission Endpoint
-		api.POST("/submission/:formSlug", h.createSubmission)
+		api.POST("/submission/:slug", h.createSubmission)
 	}
 }
 
