@@ -46,7 +46,7 @@ func New() *storeLayer {
 		return nil
 	}
 
-	db, err := gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s)/%s", username, password, host, name)), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true", username, password, host, name)), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Error: Unable to connect to MySQL server", err)
 	}
