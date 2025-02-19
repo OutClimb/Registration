@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/OutClimb/Registration/internal/store"
@@ -52,11 +53,13 @@ func (f *FormInternal) Internalize(form *store.Form, fields *[]store.FormField, 
 }
 
 func (f *FormInternal) IsBeforeFormOpen() bool {
+	fmt.Printf("%v\n", f.OpensOn)
+
 	if f.OpensOn == nil {
 		return false
 	}
 
-	return f.OpensOn.Before(time.Now())
+	return f.OpensOn.After(time.Now())
 }
 
 func (f *FormInternal) IsAfterFormClose() bool {
@@ -64,7 +67,7 @@ func (f *FormInternal) IsAfterFormClose() bool {
 		return false
 	}
 
-	return f.ClosesOn.After(time.Now())
+	return f.ClosesOn.Before(time.Now())
 }
 
 func (f *FormInternal) IsFormFilled() bool {
