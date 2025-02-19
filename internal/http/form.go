@@ -14,17 +14,17 @@ func (h *httpLayer) getForm(c *gin.Context) {
 	}
 
 	if form.IsBeforeFormOpen() {
-		c.HTML(http.StatusOK, "notOpen.html.tmpl", nil)
+		c.HTML(http.StatusOK, "notOpen.html.tmpl", form)
 		return
 	}
 
 	if form.IsAfterFormClose() {
-		c.HTML(http.StatusOK, "closed.html.tmpl", nil)
+		c.HTML(http.StatusOK, "closed.html.tmpl", form)
 		return
 	}
 
 	if form.IsFormFilled() {
-		c.HTML(http.StatusOK, "filled.html.tmpl", nil)
+		c.HTML(http.StatusOK, "filled.html.tmpl", form)
 		return
 	}
 
