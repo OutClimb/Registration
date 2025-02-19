@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/OutClimb/Registration/internal/app"
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,10 @@ func New(appLayer app.AppLayer) *httpLayer {
 	h := &httpLayer{
 		engine: gin.New(),
 		app:    appLayer,
+	}
+
+	if proxies, proxiesExist := os.LookupEnv("TRUSTED_PROXIES"); proxiesExist {
+		h.engine.SetTrustedProxies(strings.Split(proxies, ","))
 	}
 
 	h.setupFrontendRoutes()
