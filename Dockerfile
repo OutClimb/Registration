@@ -13,5 +13,8 @@ FROM alpine AS registration
 ENV GIN_MODE release
 
 COPY --from=registration-builder /app/registration /app/registration
+COPY --from=registration-builder /app/web /app/web
+COPY --from=registration-builder /app/LICENSE.md /app/LICENSE.md
+COPY --from=registration-builder /app/README.md /app/README.md
 
 ENTRYPOINT ["/app/registration"]
