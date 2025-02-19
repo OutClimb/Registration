@@ -79,10 +79,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             if (response.status === 201) {
-
-            } else {
-                submissionInProgress = false;
+                document.getElementById('successMessage').classList.remove('hidden');
+                form.classList.add('hidden');
             }
+            
+            submissionInProgress = false;
         }
     });
 });
