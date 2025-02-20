@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/OutClimb/Registration/internal/store"
@@ -26,14 +27,15 @@ func (f *FormFieldInternal) Internalize(field *store.FormField) {
 }
 
 type FormInternal struct {
-	Slug           string
-	Name           string
-	Template       string
-	OpensOn        *time.Time
-	ClosesOn       *time.Time
-	Submissions    uint
-	MaxSubmissions uint
-	Fields         map[string]*FormFieldInternal
+	Slug             string
+	Name             string
+	Template         string
+	OpensOn          *time.Time
+	ClosesOn         *time.Time
+	Submissions      uint
+	MaxSubmissions   uint
+	Fields           map[string]*FormFieldInternal
+	RecaptchaSiteKey string
 }
 
 func (f *FormInternal) Internalize(form *store.Form, fields *[]store.FormField, submissions int64) {
@@ -84,6 +86,10 @@ func (a *appLayer) GetForm(slug string) (*FormInternal, error) {
 	} else {
 		internalForm := FormInternal{}
 		internalForm.Internalize(form, formFields, submissions)
+
+		if siteKey, siteKeyExist := os.LookupEnv("RECAPTCHA_SITE_KEY"); siteKeyExist {
+			internalForm.RecaptchaSiteKey = siteKey
+		}
 
 		return &internalForm, nil
 	}

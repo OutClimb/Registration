@@ -4,6 +4,7 @@
 
 <form id="mnccForm" novalidate>
   <input type="hidden" id="formSlug" name="form_slug" value="{{.Slug}}">
+  <input type="hidden" id="recaptchaSiteKey" name="recaptcha_site_key" value="{{.RecaptchaSiteKey}}">
 
   <label for="name">Name <span aria-label="required">*</span></label>
   <input type="text" id="name" name="name" placeholder="e.g. Emily Oak" required>

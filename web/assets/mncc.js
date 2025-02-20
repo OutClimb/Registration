@@ -56,34 +56,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (isValid && !submissionInProgress) {
-            submissionInProgress = true;
-            document.getElementById('submitButton').disabled = true;
+            grecaptcha.ready(function() {
+                grecaptcha.execute(document.getElementById('recaptchaSiteKey').value, {action: 'submit'}).then(async function(token) {
+                    submissionInProgress = true;
+                    document.getElementById('submitButton').disabled = true;
 
-            const formSlug = document.getElementById('formSlug').value;
-            const response = await fetch(`/api/v1/submission/${formSlug}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: document.getElementById('name').value,
-                    pronouns: document.getElementById('pronouns').value,
-                    phone_number: document.getElementById('phoneNumber').value,
-                    email: document.getElementById('email').value,
-                    dietary_restrictions: document.getElementById('dietaryRestrictions').value,
-                    waiver_completed: document.getElementById('waiver').checked ? 'Yes' : 'No',
-                    shoes_needed: shoes.checked ? 'Yes' : 'No',
-                    shoe_size: shoeSize.value,
-                    chalk_needed: document.getElementById('chalk').checked ? 'Yes' : 'No'
-                })
+                    const formSlug = document.getElementById('formSlug').value;
+                    const response = await fetch(`/api/v1/submission/${formSlug}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name: document.getElementById('name').value,
+                            pronouns: document.getElementById('pronouns').value,
+                            phone_number: document.getElementById('phoneNumber').value,
+                            email: document.getElementById('email').value,
+                            dietary_restrictions: document.getElementById('dietaryRestrictions').value,
+                            waiver_completed: document.getElementById('waiver').checked ? 'Yes' : 'No',
+                            shoes_needed: shoes.checked ? 'Yes' : 'No',
+                            shoe_size: shoeSize.value,
+                            chalk_needed: document.getElementById('chalk').checked ? 'Yes' : 'No',
+                            recaptcha_token: token
+                        })
+                    });
+
+                    if (response.status === 201) {
+                        document.getElementById('successMessage').classList.remove('hidden');
+                        form.classList.add('hidden');
+                    }
+                    
+                    submissionInProgress = false;
+                });
             });
-
-            if (response.status === 201) {
-                document.getElementById('successMessage').classList.remove('hidden');
-                form.classList.add('hidden');
-            }
-            
-            submissionInProgress = false;
         }
     });
 });
