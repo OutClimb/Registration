@@ -98,20 +98,28 @@ func (a *appLayer) ValidateRecaptchaToken(token string, clientIp string) error {
 	return nil
 }
 
-func (a *appLayer) ValidateSubmissionWithForm(submission map[string]string, form *FormInternal) error {
+func (a *appLayer) ValidateSubmissionWithForm(submission map[string]string, form *FormInternal) []error {
+	// Make sure reCAPTCHA token is present
+	if _, ok := submission["recaptcha_token"]; !ok {
+		return []error{
+			errors.New("Missing required field: recaptcha_token"),
+		}
+	}
+
+	errs := []error{}
 	for _, field := range form.Fields {
 		if field.Required {
 			if value, ok := submission[field.Slug]; !ok || len(strings.TrimSpace(value)) == 0 {
-				return errors.New("Missing required field: " + field.Name)
+				errs = append(errs, errors.New("Missing required field: "+field.Name))
 			}
 		}
 
 		if field.Validation != "" {
 			if matched, _ := regexp.MatchString(field.Validation, submission[field.Slug]); !matched {
-				return errors.New("Field " + field.Name + " does not match validation")
+				errs = append(errs, errors.New("Field "+field.Name+" does not match validation"))
 			}
 		}
 	}
 
-	return nil
+	return errs
 }
