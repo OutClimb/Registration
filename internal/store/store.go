@@ -55,6 +55,7 @@ func New() *storeLayer {
 	db.AutoMigrate(&FormField{})
 	db.AutoMigrate(&Submission{})
 	db.AutoMigrate(&SubmissionValue{})
+	db.AutoMigrate(&User{})
 
 	return &storeLayer{
 		db: db,
