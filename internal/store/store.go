@@ -15,6 +15,7 @@ type StoreLayer interface {
 	GetForm(slug string) (*Form, error)
 	GetFormFields(formID uint) (*[]FormField, error)
 	GetNumberOfSubmissions(formID uint) (int64, error)
+	GetUser(id uint) (*User, error)
 }
 
 type storeLayer struct {

@@ -14,3 +14,13 @@ type User struct {
 	IPAddress string
 	Disabled  bool
 }
+
+func (s *storeLayer) GetUser(id uint) (*User, error) {
+	user := User{}
+
+	if result := s.db.Where("id = ?", id).First(&user); result.Error != nil {
+		return &User{}, result.Error
+	}
+
+	return &user, nil
+}
