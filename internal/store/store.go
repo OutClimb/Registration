@@ -17,7 +17,6 @@ type StoreLayer interface {
 	GetNumberOfSubmissions(formID uint) (int64, error)
 	GetUser(id uint) (*User, error)
 	GetUserWithUsername(username string) (*User, error)
-	UpdateUserWithToken(id uint, token string, clientIp string) error
 }
 
 type storeLayer struct {

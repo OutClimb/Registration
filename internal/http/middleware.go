@@ -36,7 +36,15 @@ func AuthMiddleware(h *httpLayer) gin.HandlerFunc {
 			c.JSON(401, gin.H{"error": "Invalid token"})
 			c.Abort()
 			return
-		} else if err := h.app.ValidateToken(uint(userId.(float64)), c.ClientIP()); err != nil {
+		} else if ipAddress, exists := claims["ip_address"]; !exists {
+			c.JSON(401, gin.H{"error": "Invalid token"})
+			c.Abort()
+			return
+		} else if ipAddress != c.ClientIP() {
+			c.JSON(401, gin.H{"error": "Invalid token"})
+			c.Abort()
+			return
+		} else if err := h.app.ValidateUser(uint(userId.(float64))); err != nil {
 			c.JSON(401, gin.H{"error": "Invalid token"})
 			c.Abort()
 			return
