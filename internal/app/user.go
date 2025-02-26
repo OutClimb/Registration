@@ -19,7 +19,6 @@ type UserInternal struct {
 	Username  string
 	Name      string
 	Email     string
-	IPAddress string
 	Disabled  bool
 }
 
