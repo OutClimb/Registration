@@ -57,6 +57,14 @@ func (h *httpLayer) setupApiRoutes() {
 
 		// Form Submission Endpoint
 		api.POST("/submission/:slug", h.createSubmission)
+
+		// Login Route
+		api.POST("/token", h.createToken)
+
+		// Authenticated Routes
+		// auth := api.Group("/").Use(AuthMiddleware(h))
+		// {
+		// }
 	}
 }
 
