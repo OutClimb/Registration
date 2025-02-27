@@ -17,6 +17,7 @@ type UserInternal struct {
 	UpdatedAt time.Time
 	DeletedAt *time.Time
 	Username  string
+	Role      string
 	Name      string
 	Email     string
 	Disabled  bool
@@ -27,6 +28,7 @@ func (u *UserInternal) Internalize(user *store.User) {
 	u.CreatedAt = user.CreatedAt
 	u.UpdatedAt = user.UpdatedAt
 	u.Username = user.Username
+	u.Role = user.Role
 	u.Name = user.Name
 	u.Email = user.Email
 	u.Disabled = user.Disabled
@@ -49,6 +51,20 @@ func (a *appLayer) AuthenticateUser(username string, password string) (*UserInte
 	}
 }
 
+func (a *appLayer) CheckRole(userRole string, requiredRole string) bool {
+	roleMap := map[string]int{
+		"admin":  3,
+		"viewer": 2,
+		"user":   1,
+	}
+
+	if roleMap[userRole] >= roleMap[requiredRole] {
+		return true
+	}
+
+	return false
+}
+
 func (a *appLayer) CreateToken(user *UserInternal, clientIp string) (string, error) {
 	// Get the token lifespan
 	tokenLifespan, err := strconv.Atoi(os.Getenv("TOKEN_LIFESPAN"))
@@ -60,6 +76,7 @@ func (a *appLayer) CreateToken(user *UserInternal, clientIp string) (string, err
 	claims := jwt.MapClaims{}
 	claims["user_id"] = user.ID
 	claims["ip_address"] = clientIp
+	claims["role"] = user.Role
 	claims["exp"] = time.Now().Add(time.Hour * time.Duration(tokenLifespan)).Unix()
 	claims["iss"] = "api"
 

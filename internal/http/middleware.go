@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func AuthMiddleware(h *httpLayer) gin.HandlerFunc {
+func AuthMiddleware(h *httpLayer, role string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
@@ -46,6 +46,14 @@ func AuthMiddleware(h *httpLayer) gin.HandlerFunc {
 			return
 		} else if err := h.app.ValidateUser(uint(userId.(float64))); err != nil {
 			c.JSON(401, gin.H{"error": "Invalid token"})
+			c.Abort()
+			return
+		} else if userRole, exists := claims["role"]; !exists {
+			c.JSON(401, gin.H{"error": "Invalid token"})
+			c.Abort()
+			return
+		} else if !h.app.CheckRole(userRole.(string), role) {
+			c.JSON(401, gin.H{"error": "Unauthorized"})
 			c.Abort()
 			return
 		} else {
