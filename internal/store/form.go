@@ -12,6 +12,17 @@ type Form struct {
 	OpensOn        *time.Time
 	ClosesOn       *time.Time
 	MaxSubmissions uint
+	ViewableBy     []User `gorm:"many2many:form_viewable_users;"`
+}
+
+func (s *storeLayer) GetAllForms() (*[]Form, error) {
+	forms := []Form{}
+
+	if result := s.db.Find(&forms); result.Error != nil {
+		return &[]Form{}, result.Error
+	}
+
+	return &forms, nil
 }
 
 func (s *storeLayer) GetForm(slug string) (*Form, error) {
@@ -22,4 +33,14 @@ func (s *storeLayer) GetForm(slug string) (*Form, error) {
 	}
 
 	return &form, nil
+}
+
+func (s *storeLayer) GetFormsForUser(userId uint) (*[]Form, error) {
+	forms := []Form{}
+
+	if result := s.db.Joins("LEFT JOIN form_viewable_users ON id = form_id").Where("user_id = ?", userId).Find(&forms); result.Error != nil {
+		return &[]Form{}, result.Error
+	}
+
+	return &forms, nil
 }

@@ -12,8 +12,10 @@ import (
 type StoreLayer interface {
 	CreateSubmission(form *Form, fields *[]FormField, ipAddress string, userAgent string, values map[string]string) (*Submission, error)
 	CreateSubmissionValue(submissionId uint, formValueId uint, value string) (*SubmissionValue, error)
+	GetAllForms() (*[]Form, error)
 	GetForm(slug string) (*Form, error)
 	GetFormFields(formID uint) (*[]FormField, error)
+	GetFormsForUser(userId uint) (*[]Form, error)
 	GetNumberOfSubmissions(formID uint) (int64, error)
 	GetUser(id uint) (*User, error)
 	GetUserWithUsername(username string) (*User, error)

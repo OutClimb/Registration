@@ -57,7 +57,7 @@ func AuthMiddleware(h *httpLayer, role string) gin.HandlerFunc {
 			c.Abort()
 			return
 		} else {
-			c.Set("user_id", userId)
+			c.Set("user_id", uint(userId.(float64)))
 			c.Next()
 		}
 	}

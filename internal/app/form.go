@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -47,10 +48,12 @@ func (f *FormInternal) Internalize(form *store.Form, fields *[]store.FormField, 
 	f.Submissions = uint(submissions)
 	f.MaxSubmissions = form.MaxSubmissions
 
-	f.Fields = make(map[string]*FormFieldInternal, len(*fields))
-	for _, field := range *fields {
-		f.Fields[field.Slug] = &FormFieldInternal{}
-		f.Fields[field.Slug].Internalize(&field)
+	if fields != nil {
+		f.Fields = make(map[string]*FormFieldInternal, len(*fields))
+		for _, field := range *fields {
+			f.Fields[field.Slug] = &FormFieldInternal{}
+			f.Fields[field.Slug].Internalize(&field)
+		}
 	}
 }
 
@@ -93,4 +96,41 @@ func (a *appLayer) GetForm(slug string) (*FormInternal, error) {
 
 		return &internalForm, nil
 	}
+}
+
+func (a *appLayer) GetFormsForUser(userId uint) (*[]FormInternal, error) {
+	user, err := a.store.GetUser(userId)
+	if err != nil {
+		return nil, errors.New("User not found")
+	}
+
+	if user.Role == "admin" {
+		if forms, err := a.store.GetAllForms(); err != nil {
+			return nil, errors.New("Failed to get forms")
+		} else {
+			internalForms := make([]FormInternal, len(*forms))
+			for i, form := range *forms {
+				internalForm := FormInternal{}
+				internalForm.Internalize(&form, nil, 0)
+				internalForms[i] = internalForm
+			}
+
+			return &internalForms, nil
+		}
+	} else if user.Role == "viewer" {
+		if forms, err := a.store.GetFormsForUser(userId); err != nil {
+			return nil, errors.New("Failed to get forms")
+		} else {
+			internalForms := make([]FormInternal, len(*forms))
+			for i, form := range *forms {
+				internalForm := FormInternal{}
+				internalForm.Internalize(&form, nil, 0)
+				internalForms[i] = internalForm
+			}
+
+			return &internalForms, nil
+		}
+	}
+
+	return nil, errors.New("Unauthorized")
 }

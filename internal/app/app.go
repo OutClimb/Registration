@@ -10,6 +10,7 @@ type AppLayer interface {
 	CreateToken(user *UserInternal, clientIp string) (string, error)
 	CreateSubmission(slug string, ipAddress string, userAgent string, values map[string]string) (*SubmissionInternal, error)
 	GetForm(slug string) (*FormInternal, error)
+	GetFormsForUser(userId uint) (*[]FormInternal, error)
 	ValidateUser(userId uint) error
 	ValidateRecaptchaToken(token string, clientIp string) error
 	ValidateSubmissionWithForm(submission map[string]string, form *FormInternal) []error

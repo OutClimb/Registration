@@ -71,3 +71,7 @@ func (h *httpLayer) createSubmission(c *gin.Context) {
 		c.JSON(http.StatusCreated, submission)
 	}
 }
+
+func (h *httpLayer) getSubmissionsApi(c *gin.Context) {
+
+}

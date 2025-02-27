@@ -89,6 +89,17 @@ func (a *appLayer) CreateToken(user *UserInternal, clientIp string) (string, err
 	}
 }
 
+func (a *appLayer) GetUser(userId uint) (*UserInternal, error) {
+	if user, err := a.store.GetUser(userId); err != nil {
+		return &UserInternal{}, err
+	} else {
+		userInternal := UserInternal{}
+		userInternal.Internalize(user)
+
+		return &userInternal, nil
+	}
+}
+
 func (a *appLayer) ValidateUser(userId uint) error {
 	if user, err := a.store.GetUser(userId); err != nil {
 		return errors.New("User not found")
