@@ -14,6 +14,22 @@ type User struct {
 	Disabled bool
 }
 
+func (s *storeLayer) CreateUser(username, password, name, email, role string) (*User, error) {
+	user := User{
+		Username: username,
+		Password: password,
+		Name:     name,
+		Email:    email,
+		Role:     role,
+	}
+
+	if result := s.db.Create(&user); result.Error != nil {
+		return &User{}, result.Error
+	}
+
+	return &user, nil
+}
+
 func (s *storeLayer) GetUser(id uint) (*User, error) {
 	user := User{}
 

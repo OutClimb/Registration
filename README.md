@@ -30,7 +30,7 @@ You will also need MariaDB running and configured as well with a empty database.
 With the environment variables all configured on your system you should then be able to run the following to start the service:
 
 ```
-go run ./cmd/main.go
+go run ./cmd/service/main.go
 ```
 
 ## Deploying
