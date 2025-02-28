@@ -28,26 +28,22 @@ type storeLayer struct {
 }
 
 func New() *storeLayer {
-	username, usernameExists := os.LookupEnv("DB_USERNAME")
-	if !usernameExists {
+	username := os.Getenv("DB_USERNAME")
+	if len(username) == 0 {
 		log.Fatal("Error: No database username provided")
 		return nil
 	}
 
-	password, passwordExists := os.LookupEnv("DB_PASSWORD")
-	if !passwordExists {
-		log.Fatal("Error: No database password provided")
-		return nil
-	}
+	password := os.Getenv("DB_PASSWORD")
 
-	host, hostExists := os.LookupEnv("DB_HOST")
-	if !hostExists {
+	host := os.Getenv("DB_HOST")
+	if len(host) == 0 {
 		log.Fatal("Error: No database hostname provided")
 		return nil
 	}
 
-	name, nameExists := os.LookupEnv("DB_NAME")
-	if !nameExists {
+	name := os.Getenv("DB_NAME")
+	if len(name) == 0 {
 		log.Fatal("Error: No database name provided")
 		return nil
 	}
