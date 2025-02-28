@@ -24,3 +24,12 @@ func (s *storeLayer) CreateSubmissionValue(submissionId uint, formFieldId uint, 
 
 	return &submissionValue, nil
 }
+
+func (s *storeLayer) GetSubmissionValues(submissionId uint) (*[]SubmissionValue, error) {
+	submissionValues := []SubmissionValue{}
+	if result := s.db.Where("submission_id = ?", submissionId).Find(&submissionValues); result.Error != nil {
+		return &[]SubmissionValue{}, result.Error
+	}
+
+	return &submissionValues, nil
+}

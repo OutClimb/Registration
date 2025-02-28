@@ -13,6 +13,8 @@ import (
 	"github.com/OutClimb/Registration/internal/store"
 )
 
+type SubmissionsInternal map[string]string
+
 type SubmissionInternal struct {
 	SubmittedOn time.Time
 }
@@ -43,6 +45,80 @@ func (a *appLayer) CreateSubmission(slug string, ipAddress string, userAgent str
 
 		return &submissionInternal, nil
 	}
+}
+
+func (a *appLayer) GetSubmissionsForForm(slug string, userId uint) (*[]SubmissionsInternal, error) {
+	// Get the user.
+	user, err := a.store.GetUser(userId)
+	if err != nil {
+		return nil, errors.New("User not found")
+	}
+
+	// Check if user is admin or viewer.
+	if user.Role != "admin" && user.Role != "viewer" {
+		return nil, errors.New("Unauthorized")
+	}
+
+	// Get the form.
+	form, err := a.store.GetForm(slug)
+	if err != nil {
+		return nil, errors.New("Form not found")
+	}
+
+	// Check if user is allowed to view form.
+	if user.Role == "viewer" {
+		allowed := false
+		for _, u := range form.ViewableBy {
+			if u.ID == userId {
+				allowed = true
+				break
+			}
+		}
+
+		if !allowed {
+			return nil, errors.New("Unauthorized")
+		}
+	}
+
+	// Get the submissions.
+	submissions, err := a.store.GetSubmissionsForForm(form.ID)
+	if err != nil {
+		return nil, errors.New("Error getting submissions")
+	}
+
+	// Get the form fields.
+	fields, err := a.store.GetFormFields(form.ID)
+	if err != nil {
+		return nil, errors.New("Error getting form fields")
+	}
+
+	// Transform the form fields into a map.
+	fieldMap := make(map[uint]store.FormField, len(*fields))
+	for _, field := range *fields {
+		fieldMap[field.ID] = field
+	}
+
+	// Get the submission values.
+	result := make([]SubmissionsInternal, len(*submissions))
+	for i, submission := range *submissions {
+		values, err := a.store.GetSubmissionValues(submission.ID)
+		if err != nil {
+			return nil, errors.New("Error getting submission values")
+		}
+
+		submissionMap := make(SubmissionsInternal)
+		submissionMap["submitted_on"] = submission.SubmittedOn.Format(time.UnixDate)
+		submissionMap["ip_address"] = submission.IPAddress
+		submissionMap["user_agent"] = submission.UserAgent
+		for _, value := range *values {
+			field := fieldMap[value.FormFieldID]
+			submissionMap[field.Slug] = value.Value
+		}
+
+		result[i] = submissionMap
+	}
+
+	return &result, nil
 }
 
 func (a *appLayer) ValidateRecaptchaToken(token string, clientIp string) error {

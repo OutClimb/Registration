@@ -73,5 +73,18 @@ func (h *httpLayer) createSubmission(c *gin.Context) {
 }
 
 func (h *httpLayer) getSubmissionsApi(c *gin.Context) {
+	slug := c.Param("slug")
+	userId := c.GetUint("user_id")
 
+	if submissions, err := h.app.GetSubmissionsForForm(slug, userId); err != nil {
+		if err.Error() == "Unauthorized" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		} else if err.Error() == "Form not found" {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Form not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		}
+	} else {
+		c.JSON(http.StatusOK, submissions)
+	}
 }

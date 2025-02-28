@@ -17,6 +17,8 @@ type StoreLayer interface {
 	GetFormFields(formID uint) (*[]FormField, error)
 	GetFormsForUser(userId uint) (*[]Form, error)
 	GetNumberOfSubmissions(formID uint) (int64, error)
+	GetSubmissionsForForm(formID uint) (*[]Submission, error)
+	GetSubmissionValues(submissionId uint) (*[]SubmissionValue, error)
 	GetUser(id uint) (*User, error)
 	GetUserWithUsername(username string) (*User, error)
 }

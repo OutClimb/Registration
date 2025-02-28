@@ -14,16 +14,6 @@ type Submission struct {
 	UserAgent   string
 }
 
-func (s *storeLayer) GetNumberOfSubmissions(formID uint) (int64, error) {
-	var count int64
-
-	if result := s.db.Model(&Submission{}).Where("form_id = ?", formID).Count(&count); result.Error != nil {
-		return 0, result.Error
-	}
-
-	return count, nil
-}
-
 func (s *storeLayer) CreateSubmission(form *Form, fields *[]FormField, ipAddress string, userAgent string, values map[string]string) (*Submission, error) {
 	submission := Submission{
 		FormID:      form.ID,
@@ -47,4 +37,23 @@ func (s *storeLayer) CreateSubmission(form *Form, fields *[]FormField, ipAddress
 	})
 
 	return &submission, nil
+}
+
+func (s *storeLayer) GetNumberOfSubmissions(formID uint) (int64, error) {
+	var count int64
+
+	if result := s.db.Model(&Submission{}).Where("form_id = ?", formID).Count(&count); result.Error != nil {
+		return 0, result.Error
+	}
+
+	return count, nil
+}
+
+func (s *storeLayer) GetSubmissionsForForm(formID uint) (*[]Submission, error) {
+	submissions := []Submission{}
+	if result := s.db.Where("form_id = ?", formID).Find(&submissions); result.Error != nil {
+		return &[]Submission{}, result.Error
+	}
+
+	return &submissions, nil
 }
