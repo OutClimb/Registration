@@ -2,7 +2,6 @@ package app
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"time"
 
@@ -58,8 +57,6 @@ func (f *FormInternal) Internalize(form *store.Form, fields *[]store.FormField, 
 }
 
 func (f *FormInternal) IsBeforeFormOpen() bool {
-	fmt.Printf("%v\n", f.OpensOn)
-
 	if f.OpensOn == nil {
 		return false
 	}
