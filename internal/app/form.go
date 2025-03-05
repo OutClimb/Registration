@@ -15,6 +15,7 @@ type FormFieldInternal struct {
 	Metadata   string
 	Required   bool
 	Validation string
+	Order      uint
 }
 
 func (f *FormFieldInternal) Internalize(field *store.FormField) {
@@ -24,6 +25,7 @@ func (f *FormFieldInternal) Internalize(field *store.FormField) {
 	f.Metadata = field.Metadata
 	f.Required = field.Required
 	f.Validation = field.Validation
+	f.Order = field.Order
 }
 
 type FormInternal struct {

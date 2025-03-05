@@ -55,6 +55,9 @@ func (h *httpLayer) setupApiRoutes() {
 		// Health Check
 		api.GET("/ping", h.GetPing)
 
+		// Form Endpoint
+		api.GET("/form/:slug", h.getFormApi)
+
 		// Form Submission Endpoint
 		api.POST("/submission/:slug", h.createSubmission)
 

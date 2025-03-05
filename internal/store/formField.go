@@ -9,6 +9,7 @@ type FormField struct {
 	Metadata   string
 	Required   bool
 	Validation string
+	Order      uint `gorm:"not null;default:0"`
 }
 
 func (s *storeLayer) GetFormFields(formID uint) (*[]FormField, error) {
