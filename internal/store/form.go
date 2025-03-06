@@ -28,7 +28,7 @@ func (s *storeLayer) GetAllForms() (*[]Form, error) {
 func (s *storeLayer) GetForm(slug string) (*Form, error) {
 	form := Form{}
 
-	if result := s.db.Where("slug = ?", slug).First(&form); result.Error != nil {
+	if result := s.db.Model(&Form{}).Preload("ViewableBy").Where("slug = ?", slug).First(&form); result.Error != nil {
 		return &Form{}, result.Error
 	}
 
