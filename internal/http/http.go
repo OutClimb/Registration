@@ -64,6 +64,24 @@ func (h *httpLayer) setupApiRoutes() {
 		// Login Route
 		api.POST("/token", h.createToken)
 
+		// User Authenticated Routes
+		userApi := api.Group("/").Use(AuthMiddleware(h, "user", "api"))
+		{
+			userApi.GET("/self", h.getSelf)
+		}
+
+		userReset := api.Group("/").Use(AuthMiddleware(h, "user", "reset"))
+		{
+			userReset.PUT("/password", h.updatePassword)
+		}
+
+		// Viewer Authenticated Routes
+		viewerApi := api.Group("/").Use(AuthMiddleware(h, "viewer", "api"))
+		{
+			viewerApi.GET("/form", h.getFormsApi)
+			viewerApi.GET("/submission/:slug", h.getSubmissionsApi)
+		}
+
 		// Admin Authenticated Routes
 		// admin := api.Group("/").Use(AuthMiddleware(h, "admin"))
 		// {
@@ -79,18 +97,6 @@ func (h *httpLayer) setupApiRoutes() {
 		// 	admin.PUT("/user/:id", h.updateUser)
 		// 	admin.DELETE("/user/:id", h.deleteUser)
 		// }
-
-		// Viewer Authenticated Routes
-		viewerApi := api.Group("/").Use(AuthMiddleware(h, "viewer", "api"))
-		{
-			viewerApi.GET("/form", h.getFormsApi)
-			viewerApi.GET("/submission/:slug", h.getSubmissionsApi)
-		}
-
-		viewerReset := api.Group("/").Use(AuthMiddleware(h, "viewer", "reset"))
-		{
-			viewerReset.PUT("/password", h.updatePassword)
-		}
 	}
 }
 
