@@ -19,6 +19,7 @@ type UserInternal struct {
 	UpdatedAt            time.Time
 	DeletedAt            *time.Time
 	Username             string
+	Password             string
 	Role                 string
 	Name                 string
 	Email                string
@@ -31,6 +32,7 @@ func (u *UserInternal) Internalize(user *store.User) {
 	u.CreatedAt = user.CreatedAt
 	u.UpdatedAt = user.UpdatedAt
 	u.Username = user.Username
+	u.Password = user.Password
 	u.Role = user.Role
 	u.Name = user.Name
 	u.Email = user.Email
@@ -154,6 +156,8 @@ func (a *appLayer) ValidatePassword(user *UserInternal, password string) error {
 		return errors.New("Password must contain a lowercase letter")
 	} else if strings.Contains(password, user.Username) {
 		return errors.New("Password must not contain the username")
+	} else if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err == nil {
+		return errors.New("Password must be different from the current password")
 	}
 
 	return nil
