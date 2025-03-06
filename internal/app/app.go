@@ -12,9 +12,12 @@ type AppLayer interface {
 	GetForm(slug string) (*FormInternal, error)
 	GetFormsForUser(userId uint) (*[]FormInternal, error)
 	GetSubmissionsForForm(slug string, userId uint) (*[]SubmissionsInternal, error)
+	GetUser(userId uint) (*UserInternal, error)
+	ValidatePassword(user *UserInternal, password string) error
 	ValidateUser(userId uint) error
 	ValidateRecaptchaToken(token string, clientIp string) error
 	ValidateSubmissionWithForm(submission map[string]string, form *FormInternal) []error
+	UpdatePassword(user *UserInternal, password string) error
 }
 
 type appLayer struct {

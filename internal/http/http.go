@@ -81,10 +81,15 @@ func (h *httpLayer) setupApiRoutes() {
 		// }
 
 		// Viewer Authenticated Routes
-		viewer := api.Group("/").Use(AuthMiddleware(h, "viewer"))
+		viewerApi := api.Group("/").Use(AuthMiddleware(h, "viewer", "api"))
 		{
-			viewer.GET("/form", h.getFormsApi)
-			viewer.GET("/submission/:slug", h.getSubmissionsApi)
+			viewerApi.GET("/form", h.getFormsApi)
+			viewerApi.GET("/submission/:slug", h.getSubmissionsApi)
+		}
+
+		viewerReset := api.Group("/").Use(AuthMiddleware(h, "viewer", "reset"))
+		{
+			viewerReset.PUT("/password", h.updatePassword)
 		}
 	}
 }

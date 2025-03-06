@@ -21,6 +21,7 @@ type StoreLayer interface {
 	GetSubmissionValues(submissionId uint) (*[]SubmissionValue, error)
 	GetUser(id uint) (*User, error)
 	GetUserWithUsername(username string) (*User, error)
+	UpdatePassword(id uint, password string) error
 }
 
 type storeLayer struct {

@@ -8,7 +8,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *httpLayer) createToken(c *gin.Context) {
+func (h *httpLayer) updatePassword(c *gin.Context) {
+	userId := c.GetUint("user_id")
+	user, err := h.app.GetUser(userId)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	if !user.RequirePasswordReset {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
+		return
+	}
+
 	// Get the authentication data
 	bodyAsByteArray, err := c.GetRawData()
 	if err != nil {
@@ -26,22 +38,17 @@ func (h *httpLayer) createToken(c *gin.Context) {
 		return
 	}
 
-	// Validate the authentication data
-	if len(jsonMap["username"]) == 0 || len(jsonMap["password"]) == 0 || len(jsonMap["password"]) > 72 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
+	// Validate password
+	if err := h.app.ValidatePassword(user, jsonMap["password"]); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Authenticate the user
-	if user, err := h.app.AuthenticateUser(jsonMap["username"], jsonMap["password"]); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	} else if token, err := h.app.CreateToken(user, c.ClientIP()); err != nil {
+	// Update the password
+	if err := h.app.UpdatePassword(user, jsonMap["password"]); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
 		return
-	} else if user.RequirePasswordReset {
-		c.JSON(http.StatusOK, gin.H{"token": token, "reset": true})
-	} else {
-		c.JSON(http.StatusOK, gin.H{"token": token, "reset": false})
 	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Password updated"})
 }
