@@ -1,0 +1,142 @@
+{{template "header.html.tmpl" .}}
+
+<p class="message hidden" id="successMessage">Thank you for registering! We'll see you at the event.</p>
+
+<form id="mnccForm" novalidate>
+  <input type="hidden" id="formSlug" name="form_slug" value="{{.Slug}}">
+  <input type="hidden" id="recaptchaSiteKey" name="recaptcha_site_key" value="{{.RecaptchaSiteKey}}">
+
+  <label for="name">Name <span aria-label="required">*</span></label>
+  <input type="text" id="name" name="name" placeholder="e.g. Emily Oak" required>
+  <div id="nameError" class="error hidden">Name is required</div>
+  
+  <label for="pronouns">Pronouns</label>
+  <input type="text" id="pronouns" name="pronouns" placeholder="e.g. fae/faer">
+  
+  <label for="phoneNumber">Phone Number <span aria-label="required">*</span></label>
+  <input type="tel" id="phoneNumber" name="phone_number" placeholder="e.g. 763-867-5309" required data-validation="{{.Fields.phone_number.Validation}}">
+  <div id="phoneNumberError" class="error hidden">Phone number is required</div>
+  <div id="phoneNumberFormatError" class="error hidden">Phone number must be in the format 612-867-5309</div>
+  
+  <label for="email">Email <span aria-label="required">*</span></label>
+  <input type="email" id="email" name="email" placeholder="e.g. me@emi.ly" required data-validation="{{.Fields.email.Validation}}">
+  <div id="emailError" class="error hidden">Email is required</div>
+  <div id="emailFormatError" class="error hidden">Email must be in the format test@example.com</div>
+  
+  <label for="discordUsername">Discord Username <span aria-label="required">*</span></label>
+  <input type="text" id="discordUsername" name="discord_username" placeholder="e.g. professor_oak" required>
+  <div id="discordUsernameError" class="error hidden">Discord Username is required</div>
+  <div id="discordUsernameFormatError" class="error hidden">Invalid Discord username</div>
+  
+  <fieldset>
+    <legend>Do you have a membership to any of these gyms in Minnesota?</legend>
+    <label>
+      <input type="checkbox" name="memberships" value="MBP">
+      Minneapolis Bouldering Project
+    </label>
+    <label>
+      <input type="checkbox" name="memberships" value="MNCC">
+      Minnesota Climbing Cooperative
+    </label>
+    <label>
+      <input type="checkbox" name="memberships" value="VE">
+      Vertical Endeavors (All Locations)
+    </label>
+    <label>
+      <input type="checkbox" name="memberships" value="VE-B">
+      Vertical Endeavors Bloomington
+    </label>
+    <label>
+      <input type="checkbox" name="memberships" value="VE-MN">
+      Vertical Endeavors Minnesota
+    </label>
+    <label>
+      <input type="checkbox" name="memberships" value="VE-SP">
+      Vertical Endeavors Saint Paul
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>What Locations would you be willing to volunteer at? <span aria-label="required">*</span></legend>
+    <label>
+      <input type="checkbox" name="locations" value="MBP">
+      Minneapolis Bouldering Project
+    </label>
+    <label>
+      <input type="checkbox" name="locations" value="MNCC">
+      Minnesota Climbing Cooperative
+    </label>
+    <label>
+      <input type="checkbox" name="locations" value="VE-B">
+      Vertical Endeavors Bloomington
+    </label>
+    <label>
+      <input type="checkbox" name="locations" value="VE-MN">
+      Vertical Endeavors Minnesota
+    </label>
+    <label>
+      <input type="checkbox" name="locations" value="VE-SP">
+      Vertical Endeavors Saint Paul
+    </label>
+  </fieldset>
+  <div id="locationsError" class="error hidden">This question is required</div>
+
+  <label for="gear">Do you have all the gear you need to participate in climbing at the locations you selected? <span aria-label="required">*</span></label>
+  <select id="gear" name="gear" required>
+    <option></option>
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+    <option value="notSure">I'm not sure</option>
+  </select>
+  <div id="gearError" class="error hidden">This question is required</div>
+
+  <fieldset>
+    <legend>Are there any skills or knowledge about climbing you want us to know you have?</legend>
+    <label>
+      <input type="checkbox" name="skills" value="VETopRopeBelay">
+      VE Top Rope Belay Qualified
+    </label>
+    <label>
+      <input type="checkbox" name="skills" value="VELeadClimbAndBelay">
+      VE Lead Climb & Belay Qualified
+    </label>
+    <label>
+      <input type="checkbox" name="skills" value="VELeadBelay">
+      VE Lead Belay Qualified
+    </label>
+    <label>
+      <input type="checkbox" name="skills" value="OutdoorTopRope">
+      Outdoor top roping experience
+    </label>
+    <label>
+      <input type="checkbox" name="skills" value="OutdoorSportLeadClimbing">
+      Outdoor Sport Lead Climbing Experience
+    </label>
+    <label>
+      <input type="checkbox" name="skills" value="OutdoorTradLeadClimbing">
+      Outdoor Trad Lead Climbing Experience
+    </label>
+    <label>
+      <input type="checkbox" name="skills" value="DryTooling">
+      Dry Tooling Experience
+    </label>
+    <label>
+      <input type="checkbox" name="skills" value="IceClimbing">
+      Ice Climbing Experience
+    </label>
+  </fieldset>
+
+  <label for="employeeBenefits">Do you plan to use employee benefits relating to time spent volunteering? <span aria-label="required">*</span></label>
+  <select id="employeeBenefits" name="benefits" required>
+    <option></option>
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+  </select>
+  <div id="employeeBenefitsError" class="error hidden">This question is required</div>
+
+  <button id="submitButton" type="submit">Submit</button>
+</form>
+
+<script src="/assets/volunteer.js"></script>
+
+{{template "footer.html.tmpl" .}}

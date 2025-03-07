@@ -9,6 +9,10 @@
     outline-width: 2px;
 }
 
+*:focus:not(:focus-visible) {
+    outline: none;
+}
+
 body {
     color: #000;
     font-family: "Poppins", Arial, sans-serif;
@@ -77,6 +81,16 @@ label {
     margin-top: 10px;
 }
 
+fieldset {
+    border: 0 none;
+    padding: 0;
+    margin: 15px 0 0;
+}
+
+fieldset > label {
+    margin-top: 5px;
+}
+
 input[type="text"],
 input[type="tel"],
 input[type="email"],
@@ -87,6 +101,10 @@ select {
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
+}
+
+select {
+    background: #FFF;
 }
 
 input[type="checkbox"] {
