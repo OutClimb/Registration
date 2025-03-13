@@ -184,15 +184,45 @@ func (a *appLayer) ValidateSubmissionWithForm(submission map[string]string, form
 
 	errs := []error{}
 	for _, field := range form.Fields {
+		// Validate required fields.
 		if field.Required {
 			if value, ok := submission[field.Slug]; !ok || len(strings.TrimSpace(value)) == 0 {
 				errs = append(errs, errors.New("Missing required field: "+field.Name))
 			}
 		}
 
+		// Validate fields with validation.
 		if field.Validation != "" {
 			if matched, _ := regexp.MatchString(field.Validation, submission[field.Slug]); !matched {
 				errs = append(errs, errors.New("Field "+field.Name+" does not match validation"))
+			}
+		}
+
+		// Validate checkbox fields.
+		if field.Type == "checkboxes" && submission[field.Slug] != "" {
+			options := (*form.Fields[field.Slug].Metadata).(map[string]interface{})
+			selectedOptions := strings.Split(submission[field.Slug], ", ")
+			for _, selectedOption := range selectedOptions {
+				if _, ok := options[selectedOption]; !ok {
+					errs = append(errs, errors.New("Invalid option selected for "+field.Name))
+				}
+			}
+		}
+
+		// Validate select fields.
+		if (field.Type == "radios" || field.Type == "select") && submission[field.Slug] != "" {
+			options := (*form.Fields[field.Slug].Metadata).(map[string]interface{})
+			if _, ok := options[submission[field.Slug]]; !ok {
+				errs = append(errs, errors.New("Invalid option selected for "+field.Name))
+			}
+		}
+
+		// Validate boolean fields.
+		if field.Type == "bool" {
+			lowerValue := strings.ToLower(submission[field.Slug])
+			possibleValues := map[string]bool{"true": true, "false": true, "1": true, "0": true, "yes": true, "no": true}
+			if _, ok := possibleValues[lowerValue]; !ok {
+				errs = append(errs, errors.New("Invalid value for "+field.Name))
 			}
 		}
 	}
