@@ -59,32 +59,36 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('submitButton').disabled = true;
 
                     const formSlug = document.getElementById('formSlug').value;
-                    const response = await fetch(`/api/v1/submission/${formSlug}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            name: document.getElementById('name').value,
-                            pronouns: document.getElementById('pronouns').value,
-                            phone_number: document.getElementById('phoneNumber').value,
-                            email: document.getElementById('email').value,
-                            discord_username: document.getElementById('discordUsername').value,
-                            memberships: Array.from(document.querySelectorAll('[name=memberships]:checked')).map(location => location.value).join(', '),
-                            locations: Array.from(document.querySelectorAll('[name=locations]:checked')).map(location => location.value).join(', '),
-                            gear: document.getElementById('gear').value,
-                            skills: Array.from(document.querySelectorAll('[name=skills]:checked')).map(location => location.value).join(', '),
-                            benefits: document.getElementById('employeeBenefits').value,
-                            recaptcha_token: token
-                        })
-                    });
-
-                    if (response.status === 201) {
-                        document.getElementById('successMessage').classList.remove('hidden');
-                        form.classList.add('hidden');
+                    try {
+                        const response = await fetch(`/api/v1/submission/${formSlug}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                name: document.getElementById('name').value,
+                                pronouns: document.getElementById('pronouns').value,
+                                phone_number: document.getElementById('phoneNumber').value,
+                                email: document.getElementById('email').value,
+                                discord_username: document.getElementById('discordUsername').value,
+                                memberships: Array.from(document.querySelectorAll('[name=memberships]:checked')).map(location => location.value).join(', '),
+                                locations: Array.from(document.querySelectorAll('[name=locations]:checked')).map(location => location.value).join(', '),
+                                gear: document.getElementById('gear').value,
+                                skills: Array.from(document.querySelectorAll('[name=skills]:checked')).map(location => location.value).join(', '),
+                                benefits: document.getElementById('employeeBenefits').value,
+                                recaptcha_token: token
+                            })
+                        });
+    
+                        if (response.status === 201) {
+                            document.getElementById('successMessage').classList.remove('hidden');
+                            form.classList.add('hidden');
+                        }
                     }
-                    
-                    submissionInProgress = false;
+                    finally {
+                        submissionInProgress = false;
+                        document.getElementById('submitButton').disabled = false;
+                    }
                 });
             });
         }

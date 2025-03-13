@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
 	"time"
@@ -12,7 +13,7 @@ type FormFieldInternal struct {
 	Name       string
 	Slug       string
 	Type       string
-	Metadata   string
+	Metadata   *interface{}
 	Required   bool
 	Validation string
 	Order      uint
@@ -22,9 +23,18 @@ func (f *FormFieldInternal) Internalize(field *store.FormField) {
 	f.Name = field.Name
 	f.Slug = field.Slug
 	f.Type = field.Type
-	f.Metadata = field.Metadata
+	if field.Metadata.Valid && len(field.Metadata.String) > 0 {
+		err := json.Unmarshal([]byte(field.Metadata.String), &f.Metadata)
+		if err != nil {
+			f.Metadata = nil
+		}
+	}
 	f.Required = field.Required
-	f.Validation = field.Validation
+	if field.Validation.Valid && len(field.Validation.String) > 0 {
+		f.Validation = field.Validation.String
+	} else {
+		f.Validation = ""
+	}
 	f.Order = field.Order
 }
 

@@ -1,14 +1,16 @@
 package store
 
+import "database/sql"
+
 type FormField struct {
 	ID         uint `gorm:"primaryKey"`
 	FormID     uint
 	Name       string `gorm:"not null"`
 	Slug       string `gorm:"not null;size:255"`
 	Type       string `gorm:"not null;size:32"`
-	Metadata   string
+	Metadata   sql.NullString
 	Required   bool
-	Validation string
+	Validation sql.NullString
 	Order      uint `gorm:"not null;default:0"`
 }
 

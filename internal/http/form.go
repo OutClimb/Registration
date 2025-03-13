@@ -33,13 +33,13 @@ func (f *FormPublic) Publicize(form *app.FormInternal) {
 }
 
 type FormFieldPublic struct {
-	Name       string `json:"name"`
-	Slug       string `json:"slug"`
-	Type       string `json:"type"`
-	Metadata   string `json:"metadata"`
-	Required   bool   `json:"required"`
-	Validation string `json:"validation"`
-	Order      uint   `json:"order"`
+	Name       string       `json:"name"`
+	Slug       string       `json:"slug"`
+	Type       string       `json:"type"`
+	Metadata   *interface{} `json:"metadata"`
+	Required   bool         `json:"required"`
+	Validation string       `json:"validation"`
+	Order      uint         `json:"order"`
 }
 
 func (f *FormFieldPublic) Publicize(field *app.FormFieldInternal) {

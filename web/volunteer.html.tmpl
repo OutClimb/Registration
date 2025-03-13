@@ -30,115 +30,48 @@
   
   <fieldset>
     <legend>Do you have a membership to any of these gyms in Minnesota?</legend>
-    <label>
-      <input type="checkbox" name="memberships" value="MBP">
-      Minneapolis Bouldering Project
-    </label>
-    <label>
-      <input type="checkbox" name="memberships" value="MNCC">
-      Minnesota Climbing Cooperative
-    </label>
-    <label>
-      <input type="checkbox" name="memberships" value="VE">
-      Vertical Endeavors (All Locations)
-    </label>
-    <label>
-      <input type="checkbox" name="memberships" value="VE-B">
-      Vertical Endeavors Bloomington
-    </label>
-    <label>
-      <input type="checkbox" name="memberships" value="VE-MN">
-      Vertical Endeavors Minnesota
-    </label>
-    <label>
-      <input type="checkbox" name="memberships" value="VE-SP">
-      Vertical Endeavors Saint Paul
-    </label>
-    <label>
-      <input type="checkbox" name="memberships" value="BIB">
-      Big Island Bordering
-    </label>
+    {{ range $key, $value := .Fields.memberships.Metadata }}
+      <label>
+        <input type="checkbox" name="locations" value="{{$key}}">
+        {{$value}}
+      </label>
+    {{ end }}
   </fieldset>
 
   <fieldset>
     <legend>What Locations would you be willing to volunteer at? <span aria-label="required">*</span></legend>
-    <label>
-      <input type="checkbox" name="locations" value="MBP">
-      Minneapolis Bouldering Project
-    </label>
-    <label>
-      <input type="checkbox" name="locations" value="MNCC">
-      Minnesota Climbing Cooperative
-    </label>
-    <label>
-      <input type="checkbox" name="locations" value="VE-B">
-      Vertical Endeavors Bloomington
-    </label>
-    <label>
-      <input type="checkbox" name="locations" value="VE-MN">
-      Vertical Endeavors Minnesota
-    </label>
-    <label>
-      <input type="checkbox" name="locations" value="VE-SP">
-      Vertical Endeavors Saint Paul
-    </label>
-    <label>
-      <input type="checkbox" name="memberships" value="BIB">
-      Big Island Bordering
-    </label>
+    {{ range $key, $value := .Fields.locations.Metadata }}
+      <label>
+        <input type="checkbox" name="locations" value="{{$key}}">
+        {{$value}}
+      </label>
+    {{ end }}
   </fieldset>
   <div id="locationsError" class="error hidden">This question is required</div>
 
   <label for="gear">Do you have all the gear you need to participate in climbing at the locations you selected? <span aria-label="required">*</span></label>
   <select id="gear" name="gear" required>
-    <option></option>
-    <option value="yes">Yes</option>
-    <option value="no">No</option>
-    <option value="notSure">I'm not sure</option>
+    {{ range $key, $value := .Fields.gear.Metadata }}
+      <option value="{{$key}}">{{$value}}</option>
+    {{ end }}
   </select>
   <div id="gearError" class="error hidden">This question is required</div>
 
   <fieldset>
     <legend>Are there any skills or knowledge about climbing you want us to know you have?</legend>
-    <label>
-      <input type="checkbox" name="skills" value="VETopRopeBelay">
-      VE Top Rope Belay Qualified
-    </label>
-    <label>
-      <input type="checkbox" name="skills" value="VELeadClimbAndBelay">
-      VE Lead Climb & Belay Qualified
-    </label>
-    <label>
-      <input type="checkbox" name="skills" value="VELeadBelay">
-      VE Lead Belay Qualified
-    </label>
-    <label>
-      <input type="checkbox" name="skills" value="OutdoorTopRope">
-      Outdoor top roping experience
-    </label>
-    <label>
-      <input type="checkbox" name="skills" value="OutdoorSportLeadClimbing">
-      Outdoor Sport Lead Climbing Experience
-    </label>
-    <label>
-      <input type="checkbox" name="skills" value="OutdoorTradLeadClimbing">
-      Outdoor Trad Lead Climbing Experience
-    </label>
-    <label>
-      <input type="checkbox" name="skills" value="DryTooling">
-      Dry Tooling Experience
-    </label>
-    <label>
-      <input type="checkbox" name="skills" value="IceClimbing">
-      Ice Climbing Experience
-    </label>
+    {{ range $key, $value := .Fields.skills.Metadata }}
+      <label>
+        <input type="checkbox" name="skills" value="{{$key}}">
+        {{$value}}
+      </label>
+    {{ end }}
   </fieldset>
 
   <label for="employeeBenefits">Do you plan to use employee benefits relating to time spent volunteering? <span aria-label="required">*</span></label>
   <select id="employeeBenefits" name="benefits" required>
-    <option></option>
-    <option value="yes">Yes</option>
-    <option value="no">No</option>
+    {{ range $key, $value := .Fields.benefits.Metadata }}
+      <option value="{{$key}}">{{$value}}</option>
+    {{ end }}
   </select>
   <div id="employeeBenefitsError" class="error hidden">This question is required</div>
 
