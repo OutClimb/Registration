@@ -32,7 +32,7 @@
     <legend>Do you have a membership to any of these gyms in Minnesota?</legend>
     {{ range $key, $value := .Fields.memberships.Metadata }}
       <label>
-        <input type="checkbox" name="locations" value="{{$key}}">
+        <input type="checkbox" name="memberships" value="{{$key}}">
         {{$value}}
       </label>
     {{ end }}
