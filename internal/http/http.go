@@ -65,9 +65,9 @@ func (h *httpLayer) setupApiRoutes() {
 		api.POST("/token", h.createToken)
 
 		// User Authenticated Routes
-		userApi := api.Group("/").Use(AuthMiddleware(h, "user", "api"))
+		userApiReset := api.Group("/").Use(AuthMiddleware(h, "user", "api,reset"))
 		{
-			userApi.GET("/self", h.getSelf)
+			userApiReset.GET("/self", h.getSelf)
 		}
 
 		userReset := api.Group("/").Use(AuthMiddleware(h, "user", "reset"))
