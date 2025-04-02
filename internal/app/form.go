@@ -48,16 +48,42 @@ type FormInternal struct {
 	MaxSubmissions   uint
 	Fields           map[string]*FormFieldInternal
 	RecaptchaSiteKey string
+	NotOpenMessage   string
+	ClosedMessage    string
+	SuccessMessage   string
 }
 
 func (f *FormInternal) Internalize(form *store.Form, fields *[]store.FormField, submissions int64) {
 	f.Name = form.Name
 	f.Slug = form.Slug
 	f.Template = form.Template
-	f.OpensOn = form.OpensOn
-	f.ClosesOn = form.ClosesOn
 	f.Submissions = uint(submissions)
 	f.MaxSubmissions = form.MaxSubmissions
+
+	f.OpensOn = nil
+	if form.OpensOn.Valid {
+		f.OpensOn = &form.OpensOn.Time
+	}
+
+	f.ClosesOn = nil
+	if form.ClosesOn.Valid {
+		f.ClosesOn = &form.ClosesOn.Time
+	}
+
+	f.NotOpenMessage = "The event is not open for registration just yet, but check back soon!"
+	if form.NotOpenMessage.Valid {
+		f.NotOpenMessage = form.NotOpenMessage.String
+	}
+
+	f.ClosedMessage = "The event is closed for registration. Please check back later for more events."
+	if form.ClosedMessage.Valid {
+		f.ClosedMessage = form.ClosedMessage.String
+	}
+
+	f.SuccessMessage = "Thank you for registering! We'll see you at the event."
+	if form.SuccessMessage.Valid {
+		f.SuccessMessage = form.SuccessMessage.String
+	}
 
 	if fields != nil {
 		f.Fields = make(map[string]*FormFieldInternal, len(*fields))

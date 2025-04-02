@@ -1,7 +1,7 @@
 package store
 
 import (
-	"time"
+	"database/sql"
 )
 
 type Form struct {
@@ -9,10 +9,13 @@ type Form struct {
 	Name           string `gorm:"not null"`
 	Slug           string `gorm:"uniqueIndex;not null;size:255"`
 	Template       string `gorm:"not null;size:245"`
-	OpensOn        *time.Time
-	ClosesOn       *time.Time
+	OpensOn        sql.NullTime
+	ClosesOn       sql.NullTime
 	MaxSubmissions uint
 	ViewableBy     []User `gorm:"many2many:form_viewable_users;"`
+	NotOpenMessage sql.NullString
+	ClosedMessage  sql.NullString
+	SuccessMessage sql.NullString
 }
 
 func (s *storeLayer) GetAllForms() (*[]Form, error) {
