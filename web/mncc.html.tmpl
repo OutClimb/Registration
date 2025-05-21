@@ -6,30 +6,30 @@
   <input type="hidden" id="formSlug" name="form_slug" value="{{.Slug}}">
   <input type="hidden" id="recaptchaSiteKey" name="recaptcha_site_key" value="{{.RecaptchaSiteKey}}">
 
-  <label for="name">Name <span aria-label="required">*</span></label>
-  <input type="text" id="name" name="name" placeholder="e.g. Emily Oak" required>
+  <label for="name">Name <span aria-hidden="true">*</span></label>
+  <input type="text" id="name" name="name" placeholder="e.g. Emily Oak" required autocomplete="name">
   <div id="nameError" class="error hidden">Name is required</div>
     
   <label for="pronouns">Pronouns</label>
   <input type="text" id="pronouns" name="pronouns" placeholder="e.g. fae/faer">
     
-  <label for="phoneNumber">Phone Number <span aria-label="required">*</span></label>
-  <input type="tel" id="phoneNumber" name="phone_number" placeholder="e.g. 763-867-5309" required data-validation="{{.Fields.phone_number.Validation}}">
+  <label for="phoneNumber">Phone Number <span aria-hidden="true">*</span></label>
+  <input type="tel" id="phoneNumber" name="phone_number" placeholder="e.g. 763-867-5309" required autocomplete="tel-national" data-validation="{{.Fields.phone_number.Validation}}">
   <div id="phoneNumberError" class="error hidden">Phone number is required</div>
   <div id="phoneNumberFormatError" class="error hidden">Phone number must be in the format 612-867-5309</div>
     
-  <label for="email">Email <span aria-label="required">*</span></label>
-  <input type="email" id="email" name="email" placeholder="e.g. me@emi.ly" required data-validation="{{.Fields.email.Validation}}">
+  <label for="email">Email <span aria-hidden="true">*</span></label>
+  <input type="email" id="email" name="email" placeholder="e.g. me@emi.ly" required autocomplete="email" data-validation="{{.Fields.email.Validation}}">
   <div id="emailError" class="error hidden">Email is required</div>
   <div id="emailFormatError" class="error hidden">Email must be in the format test@example.com</div>
     
   <label for="dietaryRestrictions">Dietary Restrictions</label>
-  <input type="text" id="dietaryRestrictions" name="dietary_restrictions" placeholder="e.g. Vegan, Gluten Free">
+  <input type="text" id="dietaryRestrictions" name="dietary_restrictions" placeholder="e.g. Vegan, Gluten Free" autocomplete="dietary-restrictions">
     
   <div>
     <label for="wavier">
       <input type="checkbox" id="waiver" name="waiver_completed" value="1" required>
-      I have filled out a MNCC Waiver. (<a href="https://www.mnclimbingcoop.com/open-hours/#waiver-id" target="_blank">Waiver</a>) <span aria-label="required">*</span>
+      I have filled out a MNCC Waiver. (<a href="https://www.mnclimbingcoop.com/open-hours/#waiver-id" target="_blank">Waiver</a>) <span aria-hidden="true">*</span>
     </label>
     <div id="waiverError" class="error hidden">Filling out the waiver is required</div>
   </div>
@@ -42,8 +42,8 @@
   </div>
 
   <div id="shoeSizeContainer" class="hidden">
-    <label for="shoeSize">What size climbing shoes do you wear? <span aria-label="required">*</span></label>
-    <input type="text" id="shoeSize" name="shoe_size">
+    <label for="shoeSize">What size climbing shoes do you wear? <span aria-hidden="true">*</span></label>
+    <input type="text" id="shoeSize" name="shoe_size" autocomplete="shoe-size">
     <div id="shoeSizeError" class="error hidden">Shoe size is required if you need climbing shoes</div>
   </div>
     
