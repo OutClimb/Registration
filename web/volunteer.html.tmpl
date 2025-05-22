@@ -24,7 +24,7 @@
   <div id="emailFormatError" class="error hidden">Email must be in the format test@example.com</div>
   
   <label for="discordUsername">Discord Username <span aria-hidden="true">*</span></label>
-  <input type="text" id="discordUsername" name="discord_username" placeholder="e.g. professor_oak" required autocomplete="discord">
+  <input type="text" id="discordUsername" name="discord_username" placeholder="e.g. professor_oak" required autocomplete="discord" data-validation="{{.Fields.discord_username.Validation}}">
   <div id="discordUsernameError" class="error hidden">Discord Username is required</div>
   <div id="discordUsernameFormatError" class="error hidden">Invalid Discord username</div>
   
