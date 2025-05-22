@@ -53,7 +53,12 @@ func (h *httpLayer) createSubmission(c *gin.Context) {
 
 	// Validate the submission
 	if errs := h.app.ValidateSubmissionWithForm(jsonMap, form); len(errs) != 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "There was an error validating the submission"})
+		errorMessage := "There was an error validating the submission: "
+		for _, err := range errs {
+			errorMessage += fmt.Sprintf("%s, ", err.Error())
+		}
+		errorMessage = errorMessage[:len(errorMessage)-2] // Remove the last comma and space
+		c.JSON(http.StatusBadRequest, gin.H{"error": errorMessage})
 		return
 	}
 
