@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Reset errors
         errors.forEach(error => error.classList.add('hidden'));
+        document.getElementById('errorMessage').innerText = '';
+        document.getElementById('errorMessage').classList.add('hidden');
 
         // Validate required fields
         ['name', 'phoneNumber', 'email', 'discordUsername'].forEach(field => {
@@ -83,6 +85,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (response.status === 201) {
                             document.getElementById('successMessage').classList.remove('hidden');
                             form.classList.add('hidden');
+                        } else {
+                            const errorData = await response.json();
+                            if (errorData.error) {
+                                document.getElementById('errorMessage').innerText = 'An error occurred while submitting the form. Please try again. (' + response.status + ' - ' + errorData.error + ')';
+                            } else {
+                                document.getElementById('errorMessage').innerText = 'An error occurred while submitting the form. Please try again. (' + response.status + ')';
+                            }
+                            document.getElementById('errorMessage').classList.remove('hidden');
                         }
                     }
                     finally {
