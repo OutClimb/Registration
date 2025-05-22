@@ -4,6 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Prevent multiple form submissions
     let submissionInProgress = false;
+    
+    // Ensure discord username is lowercase
+    document.getElementById('discordUsername').addEventListener('blur', function(event) {
+        event.target.value = event.target.value.trim().toLowerCase();
+    });
 
     // Handle form submission
     form.addEventListener('submit', async function(event) {
@@ -19,11 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
         errors.forEach(error => error.classList.add('hidden'));
         document.getElementById('errorMessage').innerText = '';
         document.getElementById('errorMessage').classList.add('hidden');
-
-        // Ensure discord username is lowercase
-        document.getElementById('discordUsername').addEventListener('blur', function(event) {
-            event.target.value = event.target.value.trim().toLowerCase();
-        });
 
         // Validate required fields
         ['name', 'phoneNumber', 'email', 'discordUsername'].forEach(field => {
