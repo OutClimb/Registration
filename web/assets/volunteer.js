@@ -20,6 +20,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('errorMessage').innerText = '';
         document.getElementById('errorMessage').classList.add('hidden');
 
+        // Ensure discord username is lowercase
+        document.getElementById('discordUsername').addEventListener('blur', function(event) {
+            event.target.value = event.target.value.trim().toLowerCase();
+        });
+
         // Validate required fields
         ['name', 'phoneNumber', 'email', 'discordUsername'].forEach(field => {
             const input = document.getElementById(field);
