@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Prevent multiple form submissions
     let submissionInProgress = false;
-    
+
     // Ensure discord username is lowercase
     document.getElementById('discordUsername').addEventListener('blur', function(event) {
         event.target.value = event.target.value.trim().toLowerCase();
@@ -13,7 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle form submission
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
+
         let isValid = true;
+        let firstError = null;
 
         // Exit early if a submission is already in progress
         if (submissionInProgress) {
@@ -30,12 +32,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const input = document.getElementById(field);
             if (!input.value.trim()) {
                 document.getElementById(field + 'Error').classList.remove('hidden');
+                if (!firstError) firstError = field;
                 isValid = false;
                 return;
             }
 
             if (input.dataset.validation && !new RegExp(input.dataset.validation).test(input.value)) {
                 document.getElementById(field + 'FormatError').classList.remove('hidden');
+                if (!firstError) firstError = field;
                 isValid = false;
             }
         });
@@ -44,18 +48,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const locations = document.querySelectorAll('[name=locations]:checked');
         if (locations.length === 0) {
             document.getElementById('locationsError').classList.remove('hidden');
+            if (!firstError) firstError = 'locations';
             isValid = false;
         }
 
         // Validate gear dropdown
         if (document.getElementById('gear').value.length === 0) {
             document.getElementById('gearError').classList.remove('hidden');
+            if (!firstError) firstError = 'gear';
             isValid = false;
         }
 
         // Validate employee benefits dropdown
         if (document.getElementById('employeeBenefits').value.length === 0) {
             document.getElementById('employeeBenefitsError').classList.remove('hidden');
+            if (!firstError) firstError = 'employeeBenefits';
             isValid = false;
         }
 
@@ -106,6 +113,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             });
+        } else if (firstError) {
+            document.getElementById(firstError).focus();
+            document.getElementById(firstError).scrollIntoView();
         }
     });
 });

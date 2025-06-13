@@ -11,7 +11,7 @@
   <div id="nameError" class="error hidden">Name is required</div>
     
   <label for="pronouns">Pronouns</label>
-  <input type="text" id="pronouns" name="pronouns" placeholder="e.g. fae/faer">
+  <input type="text" id="pronouns" name="pronouns" placeholder="e.g. fae/faer" autocorrect="off" autocapitalize="none">
     
   <label for="phoneNumber">Phone Number <span aria-hidden="true">*</span></label>
   <input type="tel" id="phoneNumber" name="phone_number" placeholder="e.g. 763-867-5309" required autocomplete="tel-national" data-validation="{{.Fields.phone_number.Validation}}">
@@ -55,6 +55,8 @@
   </div>
     
   <button id="submitButton" type="submit">Submit</button>
+
+  <p class="hidden" id="errorMessage"></p>
 </form>
 
 <script src="/assets/mncc.js"></script>

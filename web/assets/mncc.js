@@ -18,7 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle form submission
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
+        
         let isValid = true;
+        let firstError = null;
 
         // Exit early if a submission is already in progress
         if (submissionInProgress) {
@@ -33,12 +35,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const input = document.getElementById(field);
             if (!input.value.trim()) {
                 document.getElementById(field + 'Error').classList.remove('hidden');
+                if (!firstError) firstError = field;
                 isValid = false;
                 return;
             }
 
             if (input.dataset.validation && !new RegExp(input.dataset.validation).test(input.value)) {
                 document.getElementById(field + 'FormatError').classList.remove('hidden');
+                if (!firstError) firstError = field;
                 isValid = false;
             }
         });
@@ -46,12 +50,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Validate waiver checkbox
         if (document.getElementById('waiver').checked === false) {
             document.getElementById('waiverError').classList.remove('hidden');
+            if (!firstError) firstError = 'waiver';
             isValid = false;
         }
 
         // Validate shoe size if climbing shoes are needed
         if (shoes.checked && !shoeSize.value.trim()) {
             shoeSizeError.classList.remove('hidden');
+            if (!firstError) firstError = 'shoeSize';
             isValid = false;
         }
 
@@ -84,11 +90,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (response.status === 201) {
                         document.getElementById('successMessage').classList.remove('hidden');
                         form.classList.add('hidden');
+                    } else {
+                        const errorData = await response.json();
+                        if (errorData.error) {
+                            document.getElementById('errorMessage').innerText = 'An error occurred while submitting the form. Please try again. (' + response.status + ' - ' + errorData.error + ')';
+                        } else {
+                            document.getElementById('errorMessage').innerText = 'An error occurred while submitting the form. Please try again. (' + response.status + ')';
+                        }
+                        document.getElementById('errorMessage').classList.remove('hidden');
                     }
-                    
+                
                     submissionInProgress = false;
                 });
             });
+        } else (firstError) {
+            // Focus on the first error field and scroll into the view.
+            document.getElementById(firstError).focus();
+            document.getElementById(firstError).scrollIntoView();
         }
     });
 });

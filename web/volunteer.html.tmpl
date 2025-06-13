@@ -11,7 +11,7 @@
   <div id="nameError" class="error hidden">Name is required</div>
   
   <label for="pronouns">Pronouns</label>
-  <input type="text" id="pronouns" name="pronouns" placeholder="e.g. fae/faer">
+  <input type="text" id="pronouns" name="pronouns" placeholder="e.g. fae/faer" autocorrect="off" autocapitalize="none">
   
   <label for="phoneNumber">Phone Number <span aria-hidden="true">*</span></label>
   <input type="tel" id="phoneNumber" name="phone_number" placeholder="e.g. 763-867-5309" required autocomplete="tel-national" data-validation="{{.Fields.phone_number.Validation}}">
@@ -24,7 +24,7 @@
   <div id="emailFormatError" class="error hidden">Email must be in the format test@example.com</div>
   
   <label for="discordUsername">Discord Username <span aria-hidden="true">*</span></label>
-  <input type="text" id="discordUsername" name="discord_username" placeholder="e.g. professor_oak" required autocomplete="discord" data-validation="{{.Fields.discord_username.Validation}}">
+  <input type="text" id="discordUsername" name="discord_username" placeholder="e.g. professor_oak" required autocomplete="discord" autocorrect="off" autocapitalize="none" data-validation="{{.Fields.discord_username.Validation}}">
   <div id="discordUsernameError" class="error hidden">Discord Username is required</div>
   <div id="discordUsernameFormatError" class="error hidden">Invalid Discord username</div>
   
@@ -38,7 +38,7 @@
     {{ end }}
   </fieldset>
 
-  <fieldset>
+  <fieldset id="locations">
     <legend>What Locations would you be willing to volunteer at? <span aria-hidden="true">*</span></legend>
     {{ range $key, $value := .Fields.locations.Metadata }}
       <label>
