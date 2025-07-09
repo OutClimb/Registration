@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     submissionInProgress = false;
                 });
             });
-        } else (firstError) {
+        } else if (firstError) {
             // Focus on the first error field and scroll into the view.
             document.getElementById(firstError).focus();
             document.getElementById(firstError).scrollIntoView();
