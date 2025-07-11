@@ -1,0 +1,189 @@
+{{template "header.html.tmpl" .}}
+
+<p class="message hidden" id="successMessage">{{.SuccessMessage}}</p>
+
+<form id="outdoorsForm" novalidate>
+  <input type="hidden" id="formSlug" name="form_slug" value="{{.Slug}}">
+  <input type="hidden" id="recaptchaSiteKey" name="recaptcha_site_key" value="{{.RecaptchaSiteKey}}">
+
+  <label for="fname">First Name <span aria-hidden="true">*</span></label>
+  <input type="text" id="fname" name="fname" placeholder="e.g. Emily" required autocomplete="given-name">
+  <div id="fnameError" class="error hidden">First Name is required</div>
+
+  <label for="lname">Last Name <span aria-hidden="true">*</span></label>
+  <input type="text" id="lname" name="lname" placeholder="e.g. Oak" required autocomplete="family-name">
+  <div id="lnameError" class="error hidden">Last Name is required</div>
+
+  <label for="pronouns">Pronouns</label>
+  <input type="text" id="pronouns" name="pronouns" placeholder="e.g. fae/faer" autocorrect="off" autocapitalize="none">
+
+  <label for="email">Email <span aria-hidden="true">*</span></label>
+  <input type="email" id="email" name="email" placeholder="e.g. me@emi.ly" required autocomplete="email" data-validation="{{.Fields.email.Validation}}">
+  <div id="emailError" class="error hidden">Email is required</div>
+  <div id="emailFormatError" class="error hidden">Email must be in the format test@example.com</div>
+
+  <label for="phone_number">Phone Number <span aria-hidden="true">*</span></label>
+  <input type="tel" id="phone_number" name="phone_number" placeholder="e.g. 763-867-5309" required autocomplete="tel-national" data-validation="{{.Fields.phone_number.Validation}}">
+  <div id="phone_numberError" class="error hidden">Phone number is required</div>
+  <div id="phone_numberFormatError" class="error hidden">Phone number must be in the format 612-867-5309</div>
+
+  <fieldset>
+    <legend>Emergency Contact Information</legend>
+
+    <label for="ec_fname">First Name <span aria-hidden="true">*</span></label>
+    <input type="text" id="ec_fname" name="ec_fname" placeholder="e.g. Jane" required>
+    <div id="ec_fnameError" class="error hidden">First Name is required</div>
+
+    <label for="ec_lname">Last Name <span aria-hidden="true">*</span></label>
+    <input type="text" id="ec_lname" name="ec_lname" placeholder="e.g. Pine" required>
+    <div id="ec_lnameError" class="error hidden">Last Name is required</div>
+
+    <label for="ec_phone_number">Phone Number <span aria-hidden="true">*</span></label>
+    <input type="tel" id="ec_phone_number" name="ec_phone_number" placeholder="e.g. 763-867-5308" required data-validation="{{.Fields.ec_phone_number.Validation}}">
+    <div id="ec_phone_numberError" class="error hidden">Phone number is required</div>
+    <div id="ec_phone_numberFormatError" class="error hidden">Phone number must be in the format 612-867-5308</div>
+
+    <label for="ec_secondary_phone_number">Secondary Phone Number</label>
+    <input type="tel" id="ec_secondary_phone_number" name="ec_secondary_phone_number" placeholder="e.g. 763-867-5307" data-validation="{{.Fields.ec_secondary_phone_number.Validation}}">
+    <div id="ec_secondary_phone_numberFormatError" class="error hidden">Secondary Phone number must be in the format 612-867-5307</div>
+
+    <label for="ec_relation">Relation to Contact <span aria-hidden="true">*</span></label>
+    <input type="text" id="ec_relation" name="ec_relation" placeholder="e.g. Roomate" required>
+    <div id="ec_relationError" class="error hidden">Relation to Contact is required</div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Carpooling</legend>
+
+    <label for="cp_riding">Will you be riding with us in our carpool? <span aria-hidden="true">*</span></label>
+    <p>If so, your name and phone number may be shared with people willing to drive for the carpool.</p>
+    <select id="cp_riding" name="cp_riding" data-required="true">
+      <option></option>
+      <option>Yes</option>
+      <option>No</option>
+    </select>
+    <div id="cp_ridingError" class="error hidden">Please answer if you will be riding with us in the carpool.</div>
+
+    <label for="cp_driving">Would you be willing to drive your vehicle for the carpool? <span aria-hidden="true">*</span></label>
+    <select id="cp_driving" name="cp_driving" data-required="true">
+      <option></option>
+      <option>Yes</option>
+      <option>No</option>
+    </select>
+    <div id="cp_drivingError" class="error hidden">Please answer if you will be driving your vehicle for the carpool.</div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Climbing Experience &amp; Goals</legend>
+
+    <p>You are the best part of OutClimb, so tell us about you! This section is optional, but we use this to select the area we will be climbing in to ensure everyone finds something fun.</p>
+
+    <label>What types of climbing have you previously engaged in?</label>
+    <label><input type="checkbox" name="climbing_previous" value="Bouldering">Bouldering</label>
+    <label><input type="checkbox" name="climbing_previous" value="Rope">Rope (Top Rope, Sport Lead, Trad Lead)</label>
+
+    <div id="climbing_bouldering_field" class="hidden">
+      <label>What bouldering grade are you currently able to climb at?</label>
+      <select name="climbing_bouldering">
+        <option></option>
+        <option value="VB">VB (some Yellows at MBP)</option>
+        <option value="V0">V0 (most Yellows and some Reds at MBP)</option>
+        <option value="V1">V1 (most Reds and some Greens at MBP)</option>
+        <option value="V2">V2 (most Greens and some Purples at MBP)</option>
+        <option value="V3">V3 (most Purples and some Oranges at MBP)</option>
+        <option value="V4">V4 (most Oranges and some Blacks at MBP)</option>
+        <option value="V5">V5 (most Blacks and some Blues at MBP)</option>
+        <option value="V6">V6 (most Blues and some Pinks at MBP)</option>
+        <option value="V7">V7 (all of the Blues and some or all Pinks and Whites at MBP)</option>
+      </select>
+    </div>
+
+    <div id="climbing_rope_field" class="hidden">
+      <label>What grade are you currently able to climb at on rope?</label>
+      <select name="climbing_rope">
+        <option></option>
+        <option value="Less than 5.9">Less than 5.9</option>
+        <option value="5.9">5.9</option>
+        <option value="5.10">5.10</option>
+        <option value="5.11-">5.11-</option>
+        <option value="5.11+">5.11+</option>
+        <option value="5.12-">5.12-</option>
+        <option value="5.12+">5.12+</option>
+        <option value="5.13 and greater">5.13 and greater</option>
+      </select>
+    </div>
+
+    <label>Do you have any goals for this event?</label>
+    <textarea name="climbing_goals"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend>Climbing Gear</legend>
+
+    <label>Do you need to borrow any gear for this event?</label>
+    <label><input type="checkbox" name="gear" value="Helmet">Helmet</label>
+    <label><input type="checkbox" name="gear" value="Harness" id="gear_harness">Harness</label>
+    <label><input type="checkbox" name="gear" value="Shoes" id="gear_shoes">Shoes</label>
+   
+    <div id="gear_harness_size_field" class="hidden">
+      <label>For the harness, what size would best fit your waist? <span aria-hidden="true">*</span></label>
+      <select name="gear_harness_size" id="gear_harness_size">
+        <option></option>
+        <option value="23-29">23-29" Waist</option>
+        <option value="30-35">30-35" Waist</option>
+        <option value="36-43">36-43" Waist</option>
+        <option value="44-59">44-59" Waist</option>
+      </select>
+    <div id="gear_harness_sizeError" class="error hidden">Please answer if you need to borrow a harness.</div>
+    </div>
+   
+    <div id="gear_shoe_size_field" class="hidden">
+      <label>What size climbing shoe do you wear? <span aria-hidden="true">*</span></label>
+      <input type="text" id="gear_shoe_size" name="gear_shoe_size" autocomplete="shoe-size">
+      <div id="gear_shoe_sizeError" class="error hidden">Please answer if you need to borrow shoes.</div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Health</legend>
+
+    <label>Do you have any health conditions we should be aware of for the duration of this trip? (ie asthma, bee allergy, epilepsy)</label>
+    <textarea name="health_conditions"></textarea>
+
+    <label>Are there any accommodations you would like to request?</label>
+    <textarea name="health_accommodations"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend>Acknowledgment of Risk</legend>
+
+    <p>
+      I acknowledge that I am voluntarily participating in an outdoor rock climbing event organized by OutClimb. I understand that rock climbing is inherently a risky activity that involves various dangers, including but not limited to:
+    </p>
+
+    <ol>
+      <li><strong>Physical Injury</strong>: Climbing involves the risk of falls, abrasions, sprains, fractures, and other injuries.</li>
+      <li><strong>Environmental Hazards</strong>: Risks associated with weather conditions, wildlife, and natural obstacles (e.g., loose rocks, unstable surfaces).</li>
+      <li><strong>Equipment Failure</strong>: Potential failure or malfunction of climbing gear and safety equipment, such as harnesses, ropes, and carabiners.</li>
+      <li><strong>Personal Risk</strong>: My own physical fitness and experience level may affect my safety and the safety of others.</li>
+      <li><strong>Supervision</strong>: While there will be qualified single pitch instructors, I recognize that ultimate responsibility for my safety lies with me.</li>
+    </ol>
+
+    <p>I agree to follow all instructions provided by the event organizers and single pitch instructors. I understand that I am responsible for ensuring my own safety and the safety of those around me. I hereby assume all risks associated with my participation in this event.</p>
+
+    <p>By agreeing to this acknowledgment, I release OutClimb, its board members, agents, and volunteers from any liability for injuries or damages that may occur during my participation in this climbing event.</p>
+
+    <p>I confirm that I am physically fit and capable of participating in this activity. I also understand that if conditions become unsafe, the event organizers reserve the right to cancel or alter the planned activities.</p>
+
+    <label><input type="checkbox" name="disclaimer" id="disclaimer">I have read and agree to the acknowledgment above.</label>
+    <div id="disclaimerError" class="error hidden">You are required to read and agree to our acknowledgment of risk to participate in this event.</div>
+  </fieldset>
+
+  <button id="submitButton" type="submit">Submit</button>
+
+  <p class="hidden" id="errorMessage"></p>
+</form>
+
+<script src="/assets/outdoors.js"></script>
+
+{{template "footer.html.tmpl" .}}

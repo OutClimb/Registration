@@ -71,6 +71,11 @@ form {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+form p, form li {
+    font-size: 12px;
+    margin: 8px 0;
+}
+
 h1 {
     text-align: center;
     color: #2c3e50;
@@ -84,11 +89,14 @@ label {
 fieldset {
     border: 0 none;
     padding: 0;
-    margin: 15px 0 0;
+    margin: 16px 0 0;
 }
 
-fieldset > label {
-    margin-top: 5px;
+fieldset > legend {
+    border-bottom: 1px solid #000;
+    display: block;
+    margin-bottom: 6px;
+    width: 100%;
 }
 
 input[type="text"],
@@ -110,6 +118,16 @@ select {
 input[type="checkbox"] {
     display: inline;
     margin-right: 5px;
+}
+
+textarea {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    height: 100px;
+    margin-top: 5px;
+    padding: 8px;
+    width: 100%;
 }
 
 button {
