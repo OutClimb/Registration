@@ -71,14 +71,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        if (document.getElementById('gear_harness').checked && !document.getElementById('harness_size').value.trim()) {
-            document.getElementById('harness_sizeError').classList.remove('hidden');
+        if (document.getElementById('gear_harness').checked && !document.getElementById('gear_harness_size').value.trim()) {
+            document.getElementById('gear_harness_sizeError').classList.remove('hidden');
             if (!firstError) firstError = field;
             isValid = false;
         }
 
-        if (document.getElementById('gear_shoes').checked && !document.getElementById('shoe_size').value.trim()) {
-            document.getElementById('shoe_sizeError').classList.remove('hidden');
+        if (document.getElementById('gear_shoes').checked && !document.getElementById('gear_shoe_size').value.trim()) {
+            document.getElementById('gear_shoe_sizeError').classList.remove('hidden');
             if (!firstError) firstError = field;
             isValid = false;
         }
