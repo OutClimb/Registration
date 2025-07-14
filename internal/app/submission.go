@@ -202,7 +202,7 @@ func (a *appLayer) ValidateSubmissionWithForm(submission map[string]string, form
 		}
 
 		// Validate fields with validation.
-		if field.Validation != "" {
+		if field.Validation != "" && len(strings.TrimSpace(submission[field.Slug])) != 0 {
 			if matched, _ := regexp.MatchString(field.Validation, submission[field.Slug]); !matched {
 				errs = append(errs, errors.New("Field "+field.Name+" does not match validation"))
 			}
