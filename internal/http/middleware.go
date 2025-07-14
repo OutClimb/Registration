@@ -2,15 +2,13 @@ package http
 
 import (
 	"os"
-	"slices"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func AuthMiddleware(h *httpLayer, role string, issues string) gin.HandlerFunc {
+func AuthMiddleware(h *httpLayer, role string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
@@ -28,8 +26,6 @@ func AuthMiddleware(h *httpLayer, role string, issues string) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
-		issueRange := strings.Split(issues, ",")
 
 		claims := token.Claims.(jwt.MapClaims)
 		if expiration, err := claims.GetExpirationTime(); err != nil || !expiration.After(time.Now()) {
@@ -57,14 +53,6 @@ func AuthMiddleware(h *httpLayer, role string, issues string) gin.HandlerFunc {
 			c.Abort()
 			return
 		} else if !h.app.CheckRole(userRole.(string), role) {
-			c.JSON(401, gin.H{"error": "Unauthorized"})
-			c.Abort()
-			return
-		} else if userIssue, exists := claims["iss"]; !exists {
-			c.JSON(401, gin.H{"error": "Invalid token"})
-			c.Abort()
-			return
-		} else if !slices.Contains(issueRange, userIssue.(string)) {
 			c.JSON(401, gin.H{"error": "Unauthorized"})
 			c.Abort()
 			return

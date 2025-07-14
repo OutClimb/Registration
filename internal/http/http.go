@@ -64,26 +64,26 @@ func (h *httpLayer) setupApiRoutes() {
 		// Login Route
 		api.POST("/token", h.createToken)
 
-		// User Authenticated Routes
-		userApiReset := api.Group("/").Use(AuthMiddleware(h, "user", "api,reset"))
-		{
-			userApiReset.GET("/self", h.getSelf)
-		}
-
-		userReset := api.Group("/").Use(AuthMiddleware(h, "user", "reset"))
+		userReset := api.Group("/").Use(AuthMiddleware(h, "reset"))
 		{
 			userReset.PUT("/password", h.updatePassword)
 		}
 
+		// User Authenticated Routes
+		userApiReset := api.Group("/").Use(AuthMiddleware(h, "user"))
+		{
+			userApiReset.GET("/self", h.getSelf)
+		}
+
 		// Viewer Authenticated Routes
-		viewerApi := api.Group("/").Use(AuthMiddleware(h, "viewer", "api"))
+		viewerApi := api.Group("/").Use(AuthMiddleware(h, "viewer"))
 		{
 			viewerApi.GET("/form", h.getFormsApi)
 			viewerApi.GET("/submission/:slug", h.getSubmissionsApi)
 		}
 
 		// Admin Authenticated Routes
-		adminApi := api.Group("/").Use(AuthMiddleware(h, "admin", "api"))
+		adminApi := api.Group("/").Use(AuthMiddleware(h, "admin"))
 		{
 			adminApi.DELETE("/submission/:id", h.deleteSubmissionApi)
 		}

@@ -62,6 +62,7 @@ func (a *appLayer) CheckRole(userRole string, requiredRole string) bool {
 		"admin":  3,
 		"viewer": 2,
 		"user":   1,
+		"reset":  0,
 	}
 
 	if roleMap[userRole] >= roleMap[requiredRole] {
