@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -74,6 +75,20 @@ func (h *httpLayer) createSubmission(c *gin.Context) {
 		return
 	} else {
 		c.JSON(http.StatusCreated, submission)
+	}
+}
+
+func (h *httpLayer) deleteSubmissionApi(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	if err := h.app.DeleteSubmission(uint(id)); err != nil {
+
+	} else {
+		c.JSON(http.StatusOK, gin.H{})
 	}
 }
 

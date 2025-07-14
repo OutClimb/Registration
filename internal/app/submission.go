@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -45,6 +46,14 @@ func (a *appLayer) CreateSubmission(slug string, ipAddress string, userAgent str
 
 		return &submissionInternal, nil
 	}
+}
+
+func (a *appLayer) DeleteSubmission(id uint) error {
+	if err := a.store.DeleteSubmission(id); err != nil {
+		return errors.New("Unable to delete submission")
+	}
+
+	return nil
 }
 
 func (a *appLayer) GetSubmissionsForForm(slug string, userId uint) (*[]SubmissionsInternal, error) {
@@ -107,6 +116,7 @@ func (a *appLayer) GetSubmissionsForForm(slug string, userId uint) (*[]Submissio
 		}
 
 		submissionMap := make(SubmissionsInternal)
+		submissionMap["id"] = strconv.FormatUint(uint64(submission.ID), 10)
 		submissionMap["submitted_on"] = submission.SubmittedOn.Format(time.UnixDate)
 		submissionMap["ip_address"] = submission.IPAddress
 		submissionMap["user_agent"] = submission.UserAgent

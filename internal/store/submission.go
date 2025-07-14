@@ -39,6 +39,18 @@ func (s *storeLayer) CreateSubmission(form *Form, fields *[]FormField, ipAddress
 	return &submission, nil
 }
 
+func (s *storeLayer) DeleteSubmission(id uint) error {
+	return s.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("submission_id = ?", id).Delete(&SubmissionValue{}).Error; err != nil {
+			return err
+		} else if err := tx.Where("id = ?", id).Delete(&Submission{}).Error; err != nil {
+			return err
+		} else {
+			return nil
+		}
+	})
+}
+
 func (s *storeLayer) GetNumberOfSubmissions(formID uint) (int64, error) {
 	var count int64
 

@@ -83,8 +83,10 @@ func (h *httpLayer) setupApiRoutes() {
 		}
 
 		// Admin Authenticated Routes
-		// admin := api.Group("/").Use(AuthMiddleware(h, "admin"))
-		// {
+		adminApi := api.Group("/").Use(AuthMiddleware(h, "admin", "api"))
+		{
+			adminApi.DELETE("/submission/:id", h.deleteSubmissionApi)
+		}
 		// 	admin.GET("/form", h.getForms)
 		// 	admin.GET("/form/:slug", h.getForm)
 		// 	admin.POST("/form", h.createForm)

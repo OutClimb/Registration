@@ -9,6 +9,7 @@ type AppLayer interface {
 	CheckRole(userRole string, requiredRole string) bool
 	CreateToken(user *UserInternal, clientIp string) (string, error)
 	CreateSubmission(slug string, ipAddress string, userAgent string, values map[string]string) (*SubmissionInternal, error)
+	DeleteSubmission(id uint) error
 	GetForm(slug string) (*FormInternal, error)
 	GetFormsForUser(userId uint) (*[]FormInternal, error)
 	GetSubmissionsForForm(slug string, userId uint) (*[]SubmissionsInternal, error)
