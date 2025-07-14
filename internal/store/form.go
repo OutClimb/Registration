@@ -5,17 +5,19 @@ import (
 )
 
 type Form struct {
-	ID             uint   `gorm:"primaryKey"`
-	Name           string `gorm:"not null"`
-	Slug           string `gorm:"uniqueIndex;not null;size:255"`
-	Template       string `gorm:"not null;size:245"`
-	OpensOn        sql.NullTime
-	ClosesOn       sql.NullTime
-	MaxSubmissions uint
-	ViewableBy     []User `gorm:"many2many:form_viewable_users;"`
-	NotOpenMessage sql.NullString
-	ClosedMessage  sql.NullString
-	SuccessMessage sql.NullString
+	ID               uint   `gorm:"primaryKey"`
+	Name             string `gorm:"not null"`
+	Slug             string `gorm:"uniqueIndex;not null;size:255"`
+	Template         string `gorm:"not null;size:245"`
+	OpensOn          sql.NullTime
+	ClosesOn         sql.NullTime
+	MaxSubmissions   uint
+	ViewableBy       []User `gorm:"many2many:form_viewable_users;"`
+	NotOpenMessage   sql.NullString
+	ClosedMessage    sql.NullString
+	SuccessMessage   sql.NullString
+	EmailFormFieldID uint
+	EmailTo          string
 }
 
 func (s *storeLayer) GetAllForms() (*[]Form, error) {
