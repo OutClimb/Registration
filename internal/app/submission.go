@@ -57,7 +57,7 @@ func (a *appLayer) CreateSubmission(slug string, ipAddress string, userAgent str
 			a.sendEmail("noreply@outclimb.gay", form.EmailTo, "Form Submission - "+form.Name, "internal", emailData)
 		}
 
-		if form.EmailFormFieldID != 0 {
+		if form.EmailFormFieldID != 0 && form.EmailSubject != "" && form.EmailTemplate != "" {
 			emailTo := ""
 			for _, field := range *fields {
 				if field.ID == form.EmailFormFieldID {
