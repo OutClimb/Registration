@@ -18,6 +18,8 @@ type Form struct {
 	SuccessMessage   sql.NullString
 	EmailFormFieldID uint
 	EmailTo          string
+	EmailSubject     string
+	EmailTemplate    string
 }
 
 func (s *storeLayer) GetAllForms() (*[]Form, error) {

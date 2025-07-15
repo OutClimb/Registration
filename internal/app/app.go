@@ -1,6 +1,10 @@
 package app
 
 import (
+	"fmt"
+	"html/template"
+	"path/filepath"
+
 	"github.com/OutClimb/Registration/internal/store"
 )
 
@@ -22,11 +26,26 @@ type AppLayer interface {
 }
 
 type appLayer struct {
-	store store.StoreLayer
+	store          store.StoreLayer
+	emailTemplates map[string]*template.Template
 }
 
 func New(storeLayer store.StoreLayer) *appLayer {
+	matches, _ := filepath.Glob("web/emails/*.html.tmpl")
+	emailTemplates := make(map[string]*template.Template, len(matches))
+
+	for _, match := range matches {
+		fmt.Println(match)
+		name := match[11:(len(match) - 10)]
+		template, err := template.ParseFiles(match)
+
+		if err == nil {
+			emailTemplates[name] = template
+		}
+	}
+
 	return &appLayer{
-		store: storeLayer,
+		store:          storeLayer,
+		emailTemplates: emailTemplates,
 	}
 }

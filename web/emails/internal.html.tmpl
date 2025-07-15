@@ -1,0 +1,11 @@
+<p>Sent via registration submission.</p>
+
+<dl>
+    {{$outer := .}}
+    {{ range $index, $value := .Fields }}
+        <dt><strong>{{ $value.Name }}</strong></dt>
+        <dd>{{ index $outer.Values $value.Slug }}</dd>
+    {{ end }}
+</dl>
+
+<p><a href="https://register.outclimb.gay/manage/">Manage Submissions</a></p>

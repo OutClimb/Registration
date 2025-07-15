@@ -20,6 +20,12 @@ type SubmissionInternal struct {
 	SubmittedOn time.Time
 }
 
+type EmailSubmissionData struct {
+	Form   *store.Form
+	Fields *[]store.FormField
+	Values *map[string]string
+}
+
 func (s *SubmissionInternal) Internalize(field *store.Submission) {
 	s.SubmittedOn = field.SubmittedOn
 }
@@ -41,6 +47,29 @@ func (a *appLayer) CreateSubmission(slug string, ipAddress string, userAgent str
 	} else if submission, err := a.store.CreateSubmission(form, fields, ipAddress, userAgent, values); err != nil {
 		return &SubmissionInternal{}, err
 	} else {
+		emailData := EmailSubmissionData{
+			Form:   form,
+			Fields: fields,
+			Values: &values,
+		}
+
+		if len(form.EmailTo) != 0 {
+			a.sendEmail("noreply@outclimb.gay", form.EmailTo, "Form Submission - "+form.Name, "internal", emailData)
+		}
+
+		if form.EmailFormFieldID != 0 {
+			emailTo := ""
+			for _, field := range *fields {
+				if field.ID == form.EmailFormFieldID {
+					emailTo = values[field.Slug]
+				}
+			}
+
+			if emailTo != "" {
+				a.sendEmail("noreply@outclimb.gay", emailTo, form.EmailSubject, form.EmailTemplate, emailData)
+			}
+		}
+
 		submissionInternal := SubmissionInternal{}
 		submissionInternal.Internalize(submission)
 
