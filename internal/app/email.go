@@ -2,7 +2,6 @@ package app
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"strings"
 
@@ -14,15 +13,12 @@ func (a *appLayer) sendEmail(from, to, subject, template string, obj any) {
 	emailTemplate, exists := a.emailTemplates[template]
 
 	if !resendApiKeyExist && !exists {
-		fmt.Println("Email - 1")
 		return
 	}
 
 	var buf bytes.Buffer
 	err := emailTemplate.Execute(&buf, obj)
 	if err != nil {
-		fmt.Println("Email - 2")
-		fmt.Println(err)
 		return
 	}
 
@@ -35,6 +31,5 @@ func (a *appLayer) sendEmail(from, to, subject, template string, obj any) {
 		Html:    buf.String(),
 	}
 
-	_, err = client.Emails.Send(params)
-	fmt.Println(err)
+	client.Emails.Send(params)
 }
