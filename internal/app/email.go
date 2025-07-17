@@ -27,6 +27,7 @@ func (a *appLayer) sendEmail(from, to, subject, template string, obj any) {
 	params := &resend.SendEmailRequest{
 		From:    from,
 		To:      strings.Split(to, ","),
+		ReplyTo: "info@outclimb.gay",
 		Subject: subject,
 		Html:    buf.String(),
 	}
