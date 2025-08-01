@@ -257,7 +257,7 @@ func (a *appLayer) ValidateSubmissionWithForm(submission map[string]string, form
 		}
 
 		// Validate boolean fields.
-		if field.Type == "bool" {
+		if field.Type == "bool" && submission[field.Slug] != "" {
 			lowerValue := strings.ToLower(submission[field.Slug])
 			possibleValues := map[string]bool{"true": true, "false": true, "1": true, "0": true, "yes": true, "no": true}
 			if _, ok := possibleValues[lowerValue]; !ok {
