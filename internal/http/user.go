@@ -87,18 +87,3 @@ func (h *httpLayer) createToken(c *gin.Context) {
 		c.String(http.StatusOK, signedToken)
 	}
 }
-
-func (h *httpLayer) getSelf(c *gin.Context) {
-	userId := c.GetUint("user_id")
-
-	user, err := h.app.GetUser(userId)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Unable to find user"})
-		return
-	}
-
-	userPublic := userPublic{}
-	userPublic.Publicize(user)
-
-	c.JSON(http.StatusOK, userPublic)
-}

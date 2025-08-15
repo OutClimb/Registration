@@ -69,12 +69,6 @@ func (h *httpLayer) setupApiRoutes() {
 			userReset.PUT("/password", h.updatePassword)
 		}
 
-		// User Authenticated Routes
-		userApiReset := api.Group("/").Use(AuthMiddleware(h, "user"))
-		{
-			userApiReset.GET("/self", h.getSelf)
-		}
-
 		// Viewer Authenticated Routes
 		viewerApi := api.Group("/").Use(AuthMiddleware(h, "viewer"))
 		{
