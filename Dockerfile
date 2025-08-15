@@ -1,4 +1,4 @@
-FROM golang:1.24-alpine AS registration-builder
+FROM golang:1.25-alpine AS registration-builder
 
 COPY . /app
 WORKDIR /app
