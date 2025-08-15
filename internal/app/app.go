@@ -11,7 +11,6 @@ import (
 type AppLayer interface {
 	AuthenticateUser(username string, password string) (*UserInternal, error)
 	CheckRole(userRole string, requiredRole string) bool
-	CreateToken(user *UserInternal, clientIp string) (string, error)
 	CreateSubmission(slug string, ipAddress string, userAgent string, values map[string]string) (*SubmissionInternal, error)
 	DeleteSubmission(id uint) error
 	GetForm(slug string) (*FormInternal, error)

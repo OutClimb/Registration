@@ -3,21 +3,21 @@ package http
 import (
 	"encoding/json"
 	"net/http"
+	"os"
+	"strconv"
+	"time"
 
 	"github.com/OutClimb/Registration/internal/app"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
-type tokenPublic struct {
-	Reset bool   `json:"reset"`
-	Token string `json:"token"`
-}
-
 type userPublic struct {
-	Username string `json:"username"`
-	Role     string `json:"role"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
+	Username             string `json:"username"`
+	Role                 string `json:"role"`
+	Name                 string `json:"name"`
+	Email                string `json:"email"`
+	RequirePasswordReset bool   `json:"requirePasswordReset"`
 }
 
 func (u *userPublic) Publicize(user *app.UserInternal) {
@@ -25,9 +25,17 @@ func (u *userPublic) Publicize(user *app.UserInternal) {
 	u.Role = user.Role
 	u.Name = user.Name
 	u.Email = user.Email
+	u.RequirePasswordReset = user.RequirePasswordReset
 }
 
 func (h *httpLayer) createToken(c *gin.Context) {
+	// Get the token lifespan
+	tokenLifespan, err := strconv.Atoi(os.Getenv("TOKEN_LIFESPAN"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to create token"})
+		return
+	}
+
 	// Get the authentication data
 	bodyAsByteArray, err := c.GetRawData()
 	if err != nil {
@@ -50,14 +58,33 @@ func (h *httpLayer) createToken(c *gin.Context) {
 	}
 
 	// Authenticate the user
-	if user, err := h.app.AuthenticateUser(jsonMap["username"], jsonMap["password"]); err != nil {
+	user, err := h.app.AuthenticateUser(jsonMap["username"], jsonMap["password"])
+	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
-	} else if token, err := h.app.CreateToken(user, c.ClientIP()); err != nil {
+	}
+
+	// Create the Claims
+	claims := RedirectClaims{}
+	claims.Issuer = "registration"
+	claims.Subject = strconv.FormatUint(uint64(user.ID), 10)
+	claims.Audience = c.ClientIP()
+	claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(tokenLifespan)))
+	claims.NotBefore = jwt.NewNumericDate(time.Now())
+	claims.IssuedAt = jwt.NewNumericDate(time.Now())
+
+	userPublic := userPublic{}
+	userPublic.Publicize(user)
+
+	claims.User = userPublic
+
+	// Create the token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	if signedToken, err := token.SignedString([]byte(os.Getenv("JWT_SECRET"))); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to create token"})
 		return
 	} else {
-		c.JSON(http.StatusOK, tokenPublic{Reset: user.RequirePasswordReset, Token: token})
+		c.String(http.StatusOK, signedToken)
 	}
 }
 

@@ -2,11 +2,17 @@ package http
 
 import (
 	"os"
-	"time"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
+
+type RedirectClaims struct {
+	jwt.RegisteredClaims
+	Audience string     `json:"aud"`
+	User     userPublic `json:"user"`
+}
 
 func AuthMiddleware(h *httpLayer, role string) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -17,47 +23,34 @@ func AuthMiddleware(h *httpLayer, role string) gin.HandlerFunc {
 			return
 		}
 
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(tokenString, &RedirectClaims{}, func(token *jwt.Token) (interface{}, error) {
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 
-		if err != nil || !token.Valid {
+		if err != nil {
+			c.JSON(401, gin.H{"error": "Invalid token"})
+			c.Abort()
+		} else if claims, ok := token.Claims.(*RedirectClaims); !ok {
+			c.JSON(401, gin.H{"error": "Invalid token"})
+			c.Abort()
+		} else if claims.Audience != c.ClientIP() {
+			c.JSON(401, gin.H{"error": "Unauthorized"})
+			c.Abort()
+			return
+		} else if userId, err := strconv.Atoi(claims.Subject); err != nil {
 			c.JSON(401, gin.H{"error": "Invalid token"})
 			c.Abort()
 			return
-		}
-
-		claims := token.Claims.(jwt.MapClaims)
-		if expiration, err := claims.GetExpirationTime(); err != nil || !expiration.After(time.Now()) {
-			c.JSON(401, gin.H{"error": "Token expired"})
+		} else if err := h.app.ValidateUser(uint(userId)); err != nil {
+			c.JSON(401, gin.H{"error": "Unauthorized"})
 			c.Abort()
 			return
-		} else if userId, exists := claims["user_id"]; !exists {
-			c.JSON(401, gin.H{"error": "Invalid token"})
-			c.Abort()
-			return
-		} else if ipAddress, exists := claims["ip_address"]; !exists {
-			c.JSON(401, gin.H{"error": "Invalid token"})
-			c.Abort()
-			return
-		} else if ipAddress != c.ClientIP() {
-			c.JSON(401, gin.H{"error": "Invalid token"})
-			c.Abort()
-			return
-		} else if err := h.app.ValidateUser(uint(userId.(float64))); err != nil {
-			c.JSON(401, gin.H{"error": "Invalid token"})
-			c.Abort()
-			return
-		} else if userRole, exists := claims["role"]; !exists {
-			c.JSON(401, gin.H{"error": "Invalid token"})
-			c.Abort()
-			return
-		} else if !h.app.CheckRole(userRole.(string), role) {
+		} else if !h.app.CheckRole(claims.User.Role, role) {
 			c.JSON(401, gin.H{"error": "Unauthorized"})
 			c.Abort()
 			return
 		} else {
-			c.Set("user_id", uint(userId.(float64)))
+			c.Set("user_id", uint(userId))
 			c.Next()
 		}
 	}
