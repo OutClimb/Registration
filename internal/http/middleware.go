@@ -14,7 +14,7 @@ type RedirectClaims struct {
 	User     userPublic `json:"user"`
 }
 
-func AuthMiddleware(h *httpLayer, role string) gin.HandlerFunc {
+func AuthMiddleware(h *httpLayer, role string, resetAllowed bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
@@ -46,6 +46,10 @@ func AuthMiddleware(h *httpLayer, role string) gin.HandlerFunc {
 			c.Abort()
 			return
 		} else if !h.app.CheckRole(claims.User.Role, role) {
+			c.JSON(401, gin.H{"error": "Unauthorized"})
+			c.Abort()
+			return
+		} else if claims.User.RequirePasswordReset && !resetAllowed {
 			c.JSON(401, gin.H{"error": "Unauthorized"})
 			c.Abort()
 			return
