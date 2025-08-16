@@ -1,15 +1,7 @@
 package http
 
 import (
-	"encoding/json"
-	"net/http"
-	"os"
-	"strconv"
-	"time"
-
 	"github.com/OutClimb/Registration/internal/app"
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 )
 
 type userPublic struct {
@@ -26,64 +18,4 @@ func (u *userPublic) Publicize(user *app.UserInternal) {
 	u.Name = user.Name
 	u.Email = user.Email
 	u.RequirePasswordReset = user.RequirePasswordReset
-}
-
-func (h *httpLayer) createToken(c *gin.Context) {
-	// Get the token lifespan
-	tokenLifespan, err := strconv.Atoi(os.Getenv("TOKEN_LIFESPAN"))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to create token"})
-		return
-	}
-
-	// Get the authentication data
-	bodyAsByteArray, err := c.GetRawData()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to retrieve request body"})
-		return
-	}
-
-	// Parse the authentication data
-	jsonMap := make(map[string]string)
-	err = json.Unmarshal(bodyAsByteArray, &jsonMap)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unable to parse request body"})
-		return
-	}
-
-	// Validate the authentication data
-	if len(jsonMap["username"]) == 0 || len(jsonMap["password"]) == 0 || len(jsonMap["password"]) > 72 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid username or password. Username and Password must be greater than 0 characters in length and password must be less than 72 characters in length"})
-		return
-	}
-
-	// Authenticate the user
-	user, err := h.app.AuthenticateUser(jsonMap["username"], jsonMap["password"])
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-
-	// Create the Claims
-	claims := RedirectClaims{}
-	claims.Issuer = "registration"
-	claims.Subject = strconv.FormatUint(uint64(user.ID), 10)
-	claims.Audience = c.ClientIP()
-	claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(tokenLifespan)))
-	claims.NotBefore = jwt.NewNumericDate(time.Now())
-	claims.IssuedAt = jwt.NewNumericDate(time.Now())
-
-	userPublic := userPublic{}
-	userPublic.Publicize(user)
-
-	claims.User = userPublic
-
-	// Create the token
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	if signedToken, err := token.SignedString([]byte(os.Getenv("JWT_SECRET"))); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to create token"})
-		return
-	} else {
-		c.String(http.StatusOK, signedToken)
-	}
 }
