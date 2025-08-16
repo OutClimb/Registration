@@ -21,7 +21,6 @@ type Form struct {
 	EmailSubject       string
 	EmailTemplate      string
 }
-}
 
 func (s *storeLayer) GetAllForms() (*[]Form, error) {
 	forms := []Form{}
