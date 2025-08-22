@@ -79,6 +79,7 @@ func (h *httpLayer) setupApiRoutes() {
 		// Admin Authenticated Routes
 		adminApi := api.Group("/").Use(JwtMiddleware(h, "admin", false))
 		{
+			adminApi.POST("/form/:slug", h.duplicateForm)
 			adminApi.DELETE("/submission/:id", h.deleteSubmissionApi)
 		}
 		// 	admin.GET("/form", h.getForms)

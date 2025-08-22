@@ -1,7 +1,7 @@
 package store
 
 import (
-	"database/sql"
+	"time"
 )
 
 type Form struct {
@@ -9,17 +9,41 @@ type Form struct {
 	Name               string `gorm:"not null"`
 	Slug               string `gorm:"uniqueIndex;not null;size:255"`
 	Template           string `gorm:"not null;size:245"`
-	OpensOn            sql.NullTime
-	ClosesOn           sql.NullTime
+	OpensOn            *time.Time
+	ClosesOn           *time.Time
 	MaxSubmissions     uint
 	ViewableBy         []User `gorm:"many2many:form_viewable_users;"`
-	NotOpenMessage     sql.NullString
-	ClosedMessage      sql.NullString
-	SuccessMessage     sql.NullString
+	NotOpenMessage     *string
+	ClosedMessage      *string
+	SuccessMessage     *string
 	EmailFormFieldSlug string
 	EmailTo            string
 	EmailSubject       string
 	EmailTemplate      string
+}
+
+func (s *storeLayer) CreateForm(name, slug, template string, opensOn, closesOn *time.Time, maxSubmissions uint, notOpenMessage, closedMessage, successMessage *string, emailFormFieldSlug, emailTo, emailSubject, emailTemplate string) (*Form, error) {
+	form := Form{
+		Name:               name,
+		Slug:               slug,
+		Template:           template,
+		OpensOn:            opensOn,
+		ClosesOn:           closesOn,
+		MaxSubmissions:     maxSubmissions,
+		NotOpenMessage:     notOpenMessage,
+		ClosedMessage:      closedMessage,
+		SuccessMessage:     successMessage,
+		EmailFormFieldSlug: emailFormFieldSlug,
+		EmailTo:            emailTo,
+		EmailSubject:       emailSubject,
+		EmailTemplate:      emailTemplate,
+	}
+
+	if result := s.db.Create(&form); result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &form, nil
 }
 
 func (s *storeLayer) GetAllForms() (*[]Form, error) {

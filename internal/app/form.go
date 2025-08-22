@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/OutClimb/Registration/internal/store"
@@ -23,15 +24,15 @@ func (f *FormFieldInternal) Internalize(field *store.FormField) {
 	f.Name = field.Name
 	f.Slug = field.Slug
 	f.Type = field.Type
-	if field.Metadata.Valid && len(field.Metadata.String) > 0 {
-		err := json.Unmarshal([]byte(field.Metadata.String), &f.Metadata)
+	if field.Metadata != nil && len(*field.Metadata) > 0 {
+		err := json.Unmarshal([]byte(*field.Metadata), &f.Metadata)
 		if err != nil {
 			f.Metadata = nil
 		}
 	}
 	f.Required = field.Required
-	if field.Validation.Valid && len(field.Validation.String) > 0 {
-		f.Validation = field.Validation.String
+	if field.Validation != nil {
+		f.Validation = *field.Validation
 	} else {
 		f.Validation = ""
 	}
@@ -57,32 +58,24 @@ func (f *FormInternal) Internalize(form *store.Form, fields *[]store.FormField, 
 	f.Name = form.Name
 	f.Slug = form.Slug
 	f.Template = form.Template
+	f.OpensOn = form.OpensOn
+	f.ClosesOn = form.ClosesOn
 	f.Submissions = uint(submissions)
 	f.MaxSubmissions = form.MaxSubmissions
 
-	f.OpensOn = nil
-	if form.OpensOn.Valid {
-		f.OpensOn = &form.OpensOn.Time
-	}
-
-	f.ClosesOn = nil
-	if form.ClosesOn.Valid {
-		f.ClosesOn = &form.ClosesOn.Time
-	}
-
 	f.NotOpenMessage = "The event is not open for registration just yet, but check back soon!"
-	if form.NotOpenMessage.Valid {
-		f.NotOpenMessage = form.NotOpenMessage.String
+	if form.NotOpenMessage != nil {
+		f.NotOpenMessage = *form.NotOpenMessage
 	}
 
 	f.ClosedMessage = "The event is closed for registration. Please check back later for more events."
-	if form.ClosedMessage.Valid {
-		f.ClosedMessage = form.ClosedMessage.String
+	if form.ClosedMessage != nil {
+		f.ClosedMessage = *form.ClosedMessage
 	}
 
 	f.SuccessMessage = "Thank you for registering! We'll see you at the event."
-	if form.SuccessMessage.Valid {
-		f.SuccessMessage = form.SuccessMessage.String
+	if form.SuccessMessage != nil {
+		f.SuccessMessage = *form.SuccessMessage
 	}
 
 	if fields != nil {
@@ -112,6 +105,64 @@ func (f *FormInternal) IsAfterFormClose() bool {
 
 func (f *FormInternal) IsFormFilled() bool {
 	return f.MaxSubmissions != 0 && f.Submissions >= f.MaxSubmissions
+}
+
+func (a *appLayer) DuplicateForm(slug string) (*FormInternal, error) {
+	originalForm, err := a.store.GetForm(slug)
+	if err != nil {
+		return nil, err
+	}
+
+	originalFormFields, err := a.store.GetFormFields(originalForm.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	now := time.Now()
+
+	newForm, err := a.store.CreateForm(
+		"Copy of "+originalForm.Name,
+		originalForm.Slug+"-"+strconv.FormatInt(now.UnixMilli(), 10),
+		originalForm.Template,
+		originalForm.OpensOn,
+		originalForm.ClosesOn,
+		originalForm.MaxSubmissions,
+		originalForm.NotOpenMessage,
+		originalForm.ClosedMessage,
+		originalForm.SuccessMessage,
+		originalForm.EmailFormFieldSlug,
+		originalForm.EmailTo,
+		originalForm.EmailSubject,
+		originalForm.EmailTemplate,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	formFields := make([]store.FormField, len(*originalFormFields))
+	for i, originalFormField := range *originalFormFields {
+		formField, err := a.store.CreateFormField(
+			newForm.ID,
+			originalFormField.Name,
+			originalFormField.Slug,
+			originalFormField.Type,
+			originalFormField.Metadata,
+			originalFormField.Required,
+			originalFormField.Validation,
+			originalFormField.Order,
+		)
+		if err != nil {
+			// TODO: Clean up form
+			return nil, err
+		}
+
+		formFields[i] = *formField
+	}
+
+	internalForm := FormInternal{}
+	internalForm.Internalize(newForm, &formFields, 0)
+
+	return &internalForm, nil
 }
 
 func (a *appLayer) GetForm(slug string) (*FormInternal, error) {

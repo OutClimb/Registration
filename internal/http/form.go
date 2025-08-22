@@ -87,6 +87,16 @@ func (f *FormDetailPublic) Publicize(form *app.FormInternal) {
 	}
 }
 
+func (h *httpLayer) duplicateForm(c *gin.Context) {
+	form, error := h.app.DuplicateForm(c.Param("slug"))
+	if error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Form not found"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, form)
+}
+
 func (h *httpLayer) getForm(c *gin.Context) {
 	form, error := h.app.GetForm(c.Param("slug"))
 	if error != nil {
