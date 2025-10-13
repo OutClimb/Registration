@@ -1,0 +1,28 @@
+{{template "header.html.tmpl" .}}
+
+<p class="message hidden" id="successMessage">{{.SuccessMessage}}</p>
+
+<form id="generalForm" novalidate>
+  <input type="hidden" id="formSlug" name="form_slug" value="{{.Slug}}">
+  <input type="hidden" id="recaptchaSiteKey" name="recaptcha_site_key" value="{{.RecaptchaSiteKey}}">
+
+  <label for="name">Name <span aria-hidden="true">*</span></label>
+  <input type="text" id="name" name="name" placeholder="e.g. Emily Oak" required autocomplete="name">
+  <div id="nameError" class="error hidden">Name is required</div>
+    
+  <label for="pronouns">Pronouns</label>
+  <input type="text" id="pronouns" name="pronouns" placeholder="e.g. fae/faer" autocorrect="off" autocapitalize="none">
+
+  <label for="email">Email <span aria-hidden="true">*</span></label>
+  <input type="email" id="email" name="email" placeholder="e.g. me@emi.ly" required autocomplete="email" data-validation="{{.Fields.email.Validation}}">
+  <div id="emailError" class="error hidden">Email is required</div>
+  <div id="emailFormatError" class="error hidden">Email must be in the format test@example.com</div>
+    
+  <button id="submitButton" type="submit">Submit</button>
+
+  <p class="hidden" id="errorMessage"></p>
+</form>
+
+<script src="/assets/general.js"></script>
+
+{{template "footer.html.tmpl" .}}
