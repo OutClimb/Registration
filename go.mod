@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/golang-jwt/jwt/v5 v5.3.0
-	github.com/resend/resend-go/v2 v2.27.0
+	github.com/resend/resend-go/v2 v2.28.0
 	golang.org/x/crypto v0.45.0
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/gorm v1.31.1
