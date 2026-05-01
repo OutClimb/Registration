@@ -124,6 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             health_conditions: fields['health_conditions'].value,
                             health_accommodations: fields['health_accommodations'].value,
                             disclaimer: fields['disclaimer'].checked ? 'I have read and agree to the acknowledgment above.' : '',
+                            newsletter: fields['newsletter']?.checked ? 'true' : 'false',
                             recaptcha_token: token
                         })
                     });

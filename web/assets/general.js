@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             name: document.getElementById('name').value,
                             pronouns: document.getElementById('pronouns').value,
                             email: document.getElementById('email').value,
+                            newsletter: document.getElementById('newsletter')?.checked ? 'true' : 'false',
                             recaptcha_token: token,
                         })
                     });

@@ -54,20 +54,32 @@ func (a *appLayer) CreateSubmission(slug string, ipAddress string, userAgent str
 		}
 
 		if len(form.EmailTo) != 0 {
-			a.sendEmail("noreply@outclimb.gay", form.EmailTo, "Form Submission - "+form.Name, "internal", emailData)
+			go a.sendEmail("noreply@outclimb.gay", form.EmailTo, "Form Submission - "+form.Name, "internal", emailData)
 		}
 
-		if form.EmailFormFieldSlug != "" && form.EmailSubject != "" && form.EmailTemplate != "" {
-			emailTo := ""
-			for _, field := range *fields {
-				if field.Slug == form.EmailFormFieldSlug {
-					emailTo = values[field.Slug]
-				}
+		firstName := ""
+		lastName := ""
+		emailTo := ""
+		for _, field := range *fields {
+			if form.EmailFormFieldSlug != "" && field.Slug == form.EmailFormFieldSlug {
+				emailTo = values[field.Slug]
 			}
 
-			if emailTo != "" {
-				a.sendEmail("noreply@outclimb.gay", emailTo, form.EmailSubject, form.EmailTemplate, emailData)
+			if form.FirstNameFormFieldSlug != nil && field.Slug == *form.FirstNameFormFieldSlug {
+				firstName = values[field.Slug]
 			}
+
+			if form.LastNameFormFieldSlug != nil && field.Slug == *form.LastNameFormFieldSlug {
+				lastName = values[field.Slug]
+			}
+		}
+
+		if firstName != "" && lastName != "" && emailTo != "" && values["newsletter"] == "true" {
+			go a.subscribeToNewsletter(firstName, lastName, emailTo)
+		}
+
+		if emailTo != "" && form.EmailSubject != "" && form.EmailTemplate != "" {
+			go a.sendEmail("noreply@outclimb.gay", emailTo, form.EmailSubject, form.EmailTemplate, emailData)
 		}
 
 		submissionInternal := SubmissionInternal{}

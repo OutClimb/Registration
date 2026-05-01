@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             shoes_needed: shoes.checked ? 'Yes' : 'No',
                             shoe_size: shoeSize.value,
                             chalk_needed: document.getElementById('chalk').checked ? 'Yes' : 'No',
+                            newsletter: document.getElementById('newsletter')?.checked ? 'true' : 'false',
                             recaptcha_token: token
                         })
                     });

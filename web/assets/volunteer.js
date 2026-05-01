@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 gear: document.getElementById('gear').value,
                                 skills: Array.from(document.querySelectorAll('[name=skills]:checked')).map(location => location.value).join(', '),
                                 benefits: document.getElementById('employeeBenefits').value,
+                                newsletter: document.getElementById('newsletter')?.checked ? 'true' : 'false',
                                 recaptcha_token: token
                             })
                         });

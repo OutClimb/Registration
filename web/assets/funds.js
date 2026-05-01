@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             pronouns: fields['pronouns'].value,
                             email: fields['email'].value,
                             need: fields['need'].filter((e) => e.checked).map((e) => e.value).join(', '),
+                            newsletter: fields['newsletter']?.checked ? 'true' : 'false',
                             recaptcha_token: token
                         })
                     });

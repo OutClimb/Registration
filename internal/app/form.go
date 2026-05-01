@@ -134,6 +134,8 @@ func (a *appLayer) DuplicateForm(slug string) (*FormInternal, error) {
 		originalForm.EmailTo,
 		originalForm.EmailSubject,
 		originalForm.EmailTemplate,
+		originalForm.FirstNameFormFieldSlug,
+		originalForm.LastNameFormFieldSlug,
 	)
 	if err != nil {
 		return nil, err

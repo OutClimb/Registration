@@ -11,7 +11,7 @@ import (
 )
 
 type StoreLayer interface {
-	CreateForm(name, slug, template string, opensOn, closesOn *time.Time, maxSubmissions uint, notOpenMessage, closedMessage, successMessage *string, emailFormFieldSlug, emailTo, emailSubject, emailTemplate string) (*Form, error)
+	CreateForm(name, slug, template string, opensOn, closesOn *time.Time, maxSubmissions uint, notOpenMessage, closedMessage, successMessage *string, emailFormFieldSlug, emailTo, emailSubject, emailTemplate string, firstNameFormFieldSlug, lastNameFormFieldSlug *string) (*Form, error)
 	CreateFormField(formID uint, name, slug, fieldType string, metadata *string, required bool, validation *string, order uint) (*FormField, error)
 	CreateSubmission(form *Form, fields *[]FormField, ipAddress string, userAgent string, values map[string]string) (*Submission, error)
 	CreateSubmissionValue(submissionId uint, formValueId uint, value string) (*SubmissionValue, error)
