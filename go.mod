@@ -5,6 +5,7 @@ go 1.25.0
 require (
 	github.com/gin-gonic/gin v1.12.0
 	github.com/golang-jwt/jwt/v5 v5.3.1
+	github.com/mailerlite/mailerlite-go v1.2.0
 	github.com/resend/resend-go/v2 v2.28.0
 	golang.org/x/crypto v0.50.0
 	gorm.io/driver/mysql v1.6.0
@@ -31,7 +32,6 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/mailerlite/mailerlite-go v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
