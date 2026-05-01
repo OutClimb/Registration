@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         errors.forEach(error => error.classList.add('hidden'));
 
         // Validate required fields
-        ['name', 'phoneNumber', 'email'].forEach(field => {
+        ['name', 'lastName', 'phoneNumber', 'email'].forEach(field => {
             const input = document.getElementById(field);
             if (!input.value.trim()) {
                 document.getElementById(field + 'Error').classList.remove('hidden');
@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         },
                         body: JSON.stringify({
                             name: document.getElementById('name').value,
+                            last_name: document.getElementById('lastName').value,
                             pronouns: document.getElementById('pronouns').value,
                             phone_number: document.getElementById('phoneNumber').value,
                             email: document.getElementById('email').value,

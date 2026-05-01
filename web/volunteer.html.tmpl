@@ -6,9 +6,13 @@
   <input type="hidden" id="formSlug" name="form_slug" value="{{.Slug}}">
   <input type="hidden" id="recaptchaSiteKey" name="recaptcha_site_key" value="{{.RecaptchaSiteKey}}">
 
-  <label for="name">Name <span aria-hidden="true">*</span></label>
-  <input type="text" id="name" name="name" placeholder="e.g. Emily Oak" required autocomplete="name">
-  <div id="nameError" class="error hidden">Name is required</div>
+  <label for="fname">First Name <span aria-hidden="true">*</span></label>
+  <input type="text" id="name" name="name" placeholder="e.g. Emily" required autocomplete="given-name">
+  <div id="fnameError" class="error hidden">First Name is required</div>
+
+  <label for="lname">Last Name <span aria-hidden="true">*</span></label>
+  <input type="text" id="lastName" name="lastName" placeholder="e.g. Oak" required autocomplete="family-name">
+  <div id="lnameError" class="error hidden">Last Name is required</div>
   
   <label for="pronouns">Pronouns</label>
   <input type="text" id="pronouns" name="pronouns" placeholder="e.g. fae/faer" autocorrect="off" autocapitalize="none">
