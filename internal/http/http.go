@@ -30,12 +30,21 @@ func New(appLayer app.AppLayer) *httpLayer {
 	return h
 }
 
+func noCacheMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Cache-Control", "no-cache")
+	}
+}
+
 func (h *httpLayer) setupFrontendRoutes() {
 	// Load templates
 	h.engine.LoadHTMLGlob("./web/*.html.tmpl")
 
 	// Static Files
-	h.engine.Static("/assets", "./web/assets")
+	assets := h.engine.Group("/assets").Use(noCacheMiddleware())
+	{
+		assets.Static("/", "./web/assets")
+	}
 	h.engine.StaticFile("/favicon.ico", "./web/favicon.ico")
 	h.engine.StaticFile("/manifest.json", "./web/manifest.json")
 	h.engine.StaticFile("/robots.txt", "./web/robots.txt")
