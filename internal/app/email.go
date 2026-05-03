@@ -58,6 +58,6 @@ func (a *appLayer) subscribeToNewsletter(firstName, lastName, email string) {
 
 	_, _, err := client.Subscriber.Upsert(ctx, subscriber)
 	if err != nil {
-		log.Printf("Unable to subscribe individual to newsletter: %s", err)
+		log.Printf("Unable to subscribe individual to newsletter: %s\n", err)
 	}
 }

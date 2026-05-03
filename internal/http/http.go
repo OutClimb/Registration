@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/OutClimb/Registration/internal/app"
 	"github.com/gin-gonic/gin"
@@ -67,11 +68,12 @@ func (h *httpLayer) setupApiRoutes() {
 		// Form Endpoint
 		api.GET("/form/:slug", h.getFormApi)
 
-		// Form Submission Endpoint
-		api.POST("/submission/:slug", h.createSubmission)
-
-		// Login Route
-		api.POST("/token", h.createToken)
+		// Rate Limited Routes Endpoint
+		rateLimit := h.engine.Group("/").Use(rateLimit(5, time.Minute))
+		{
+			rateLimit.POST("/submission/:slug", h.createSubmission)
+			rateLimit.POST("/token", h.createToken)
+		}
 
 		userReset := api.Group("/").Use(JwtMiddleware(h, "user", true))
 		{

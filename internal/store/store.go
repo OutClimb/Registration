@@ -34,6 +34,7 @@ type storeLayer struct {
 
 func New() *storeLayer {
 	username := os.Getenv("DB_USERNAME")
+	fmt.Printf("Username: %s\n", username)
 	if len(username) == 0 {
 		log.Fatal("Error: No database username provided")
 		return nil
