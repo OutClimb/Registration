@@ -69,7 +69,7 @@ func (h *httpLayer) setupApiRoutes() {
 		api.GET("/form/:slug", h.getFormApi)
 
 		// Rate Limited Routes Endpoint
-		rateLimit := h.engine.Group("/").Use(rateLimit(5, time.Minute))
+		rateLimit := api.Group("/").Use(rateLimit(5, time.Minute))
 		{
 			rateLimit.POST("/submission/:slug", h.createSubmission)
 			rateLimit.POST("/token", h.createToken)
